@@ -9,6 +9,39 @@ Do not remove the back-link in this web template
 @import url(http://fonts.googleapis.com/css?family=Raleway:800,700,400);
 @import url(http://fonts.googleapis.com/css?family=Signika:400,600);
 
+body {
+    background-color: var(--background-primary);
+    color: var(--text-normal);
+}
+
+header, nav {
+    background-color: var(--background-primary-alt);
+    color: var(--text-accent);
+}
+
+.navbar-nav > li > a {
+    color: var(--text-accent);
+}
+
+.navbar-nav > li > a:hover {
+    color: var(--text-accent-hover);
+}
+
+.logo-text {
+    color: var(--text-accent);
+    font-size: 2.5em;
+}
+
+section {
+    background-color: var(--background-secondary);
+    color: var(--text-normal);
+}
+
+footer {
+    background-color: var(--background-primary-alt);
+    color: var(--text-muted);
+}
+
 /* Reset
 ---------------------------------*/
 ul {
@@ -52,17 +85,17 @@ a, a:hover, a:active {
 /* Styles
 ---------------------------------*/
 body {
-    background: #fff;
+    background: #202020; /* Obsidian background-primary */
+    color: #dcddde; /* Obsidian text-normal */
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     font-weight: normal;
-    color: #888888;
     margin: 0;
 }
 
 h2 {
     font-size: 38px;
-    color: #222222;
+    color: #dcddde; /* Obsidian text-normal */
     font-family: 'Raleway', sans-serif;
     font-weight: normal;
     margin: 0px 0 25px 0;
@@ -73,9 +106,27 @@ h2 {
 h3 {
     font-family: 'Open Sans', sans-serif;
     font-weight: 600;
-    color: #222222;
+    color: #dcddde; /* Obsidian text-normal */
     font-size: 18px;
     margin: 0 0 5px 0;
+}
+/* Malow-Display Font and Logo Text Styling */
+@font-face {
+    font-family: 'Malow-Display';
+    src: url('../fonts/Malow-Display.woff2') format('woff2'),
+         url('../fonts/Malow-Display.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+.logo-text {
+    font-family: 'Malow-Display', sans-serif;
+    font-size: 2.5em; /* Adjusted size for better visibility */
+    color: #7f6df2; /* Obsidian text-accent - purple color for the logo */
+    display: inline-block;
+    vertical-align: middle;
+    letter-spacing: 2px;
+    padding: 0 8px;
+    line-height: 1;
 }
 
 h6 {
@@ -96,7 +147,7 @@ p {
 ---------------------------------*/
 
 #header_wrapper {
-    background: #ffffff;
+    background: #1E1E1E; /* Darker shade for header and navigation */
     padding: 20px 0px;
 }
 
@@ -107,14 +158,14 @@ p {
 .logo {
     float: left;
     margin-top: 8px;
-	position: relative;
-	z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
 .res-nav_click {
     display: none;
 }
-	
+    
 
 /* Nav Styles
 ---------------------------------*/
@@ -130,7 +181,7 @@ p {
 }
 
 .navbar-inverse .navbar-nav > li > a {
-    color: #222;
+    color: #66D9EF; /* Monokai blue for links */
 }
 
 .navStyle {
@@ -148,7 +199,7 @@ p {
 }
 
 .navStyle ul li:first-child {
-	/*margin:0px;*/;
+    /*margin:0px;*/;
 }
 
 .navStyle ul li:last-child {
@@ -158,7 +209,7 @@ p {
 .navStyle ul li a {
     display: block;
     font-size: 14px;
-    color: #222222;
+    color: #F8F8F2; /* Monokai foreground text */
     font-family: 'Raleway', sans-serif;
     text-decoration: none;
     text-transform: uppercase;
@@ -169,29 +220,29 @@ p {
 }
 
 .navStyle ul li a:hover {
-    color: #df0031;
+    color: #FD971F; /* Monokai orange for hover */
 }
 
 .navStyle > li > a:hover, .nav > li > a:focus {
     text-decoration: none;
-    color: #df0031;
+    color: #FD971F; /* Monokai orange for hover */
     background-color: transparent;
 }
 
 .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-    color: #df0031;
+    color: #FD971F; /* Monokai orange for hover */
     background-color: transparent;
 }
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
-    color: #df0031;
+    color: #FD971F; /* Monokai orange for hover */
     background-color: transparent;
 }
 
 .navStyle > li.active > a,
 .navStyle > li.active > a:hover {
     text-decoration: none;
-    color: #df0031;
+    color: #FD971F; /* Monokai orange for hover */
     background-color: transparent;
 }
 
@@ -289,7 +340,7 @@ a.read_more2:hover {
     border: 1px solid #fff;
 }
 
-	
+    
 
 
 
@@ -364,7 +415,7 @@ a.read_more2:hover {
     color: #888888;
     margin: 0px;
 }
-	
+    
 
 
 /* Latest Work
@@ -1061,9 +1112,9 @@ img {
 
 
 
-	
+    
 /* Portfolio */	
-	
+    
 .container.portfolio_title {
     padding-bottom: 0px;
 }
@@ -1119,7 +1170,7 @@ img {
 }
 
 .section-title h2 {
-    color: #222222;
+    color: #F8F8F2; /* Monokai foreground text */
     font-family: 'Raleway', sans-serif;
     font-size: 34px;
     letter-spacing: -1px;
@@ -1290,10 +1341,10 @@ img {
     -o-transition: opacity .3s .2s, margin-top .3s .2s;
     transition: opacity .3s .2s, margin-top .3s .2s;
 }
-	
-	
-	
-	
+    
+    
+    
+    
 /* Portfolio Isotope Transitions */	
 
 .isotope, .isotope .isotope-item {
@@ -1403,10 +1454,10 @@ img {
     padding-bottom: 40px;
 }
 
-	
+    
 /* Portfolio*/	
-	
-	
+    
+    
 .project-image-slider .bx-wrapper .bx-next {
     background: url("images/project_slider_right.png") no-repeat;
     background-size: 35px 65px;
@@ -1436,9 +1487,9 @@ img {
     width: 35px;
     z-index: 100;
 }
-	
+    
 /* Portfolio Normal Expander */		
-	
+    
 .project-description {
     margin-top: 40px;
     margin-bottom: 20px;
@@ -1462,15 +1513,15 @@ img {
 }
 
 .project-description h5 {
-    color: #222222;
+    color: #F8F8F2; /* Monokai foreground text */
     text-transform: uppercase;
     margin-bottom: 5px;
 }
-	
-	
-	
+    
+    
+    
 /* Portfolio FullScreen Expander */			
-	
+    
 #cycle-loader {
     height: 32px;
     left: 50%;

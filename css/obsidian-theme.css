@@ -1,0 +1,382 @@
+/* Obsidian-inspired Dark Theme for Website
+   Based on Obsidian color scheme */
+
+:root {
+    /* Base colors */
+    --background-primary: #202020;
+    --background-primary-alt: #1a1a1a;
+    --background-secondary: #161616;
+    --background-secondary-alt: #000000;
+    
+    /* Section-specific background variations */
+    --hero-background: #131319;      /* Slightly blue-tinted dark */
+    --about-background: #1a191e;     /* Subtle purple tint */
+    --service-background: #141420;   /* Another blue variation */
+    --portfolio-background: #1a1621; /* Purple-tinted dark */
+    --team-background: #171721;      /* Subtle blue-purple mix */
+    --clients-background: #15121a;   /* Deeper purple shade */
+    --contact-background: #18181f;   /* Blue-ish dark */
+    
+    /* Border and accent colors */
+    --background-modifier-border: #333;
+    --text-accent: #7f6df2;
+    --text-accent-hover: #8875ff;
+    
+    /* Text colors */
+    --text-normal: #dcddde;
+    --text-muted: #999;
+    --text-faint: #666;
+    
+    /* Interactive elements */
+    --interactive-normal: #2a2a2a;
+    --interactive-hover: #303030;
+    --interactive-accent: #483699;
+    --interactive-accent-hover: #4d3ca6;
+    
+    /* Scrollbar */
+    --scrollbar-bg: rgba(255, 255, 255, 0.05);
+    --scrollbar-thumb-bg: rgba(255, 255, 255, 0.1);
+    
+    /* Subtle gradient overlays */
+    --gradient-hero: linear-gradient(135deg, rgba(127, 109, 242, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
+    --gradient-about: linear-gradient(45deg, rgba(127, 109, 242, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+    --gradient-service: linear-gradient(225deg, rgba(127, 109, 242, 0.07) 0%, rgba(0, 0, 0, 0) 60%);
+    --gradient-portfolio: linear-gradient(0deg, rgba(127, 109, 242, 0.06) 0%, rgba(0, 0, 0, 0) 50%);
+}
+
+/* Global Styles */
+body {
+    background-color: var(--background-primary);
+    color: var(--text-normal);
+    font-family: 'Open Sans', sans-serif;
+}
+
+h2, h3, h4, h5, h6 {
+    color: var(--text-normal);
+}
+
+a {
+    color: var(--text-accent);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--text-accent-hover);
+    text-decoration: none;
+}
+
+/* Header Styles */
+#header_wrapper {
+    background-color: var(--background-secondary-alt);
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* Logo Styling with Enhanced Contrast */
+.logo-text {
+    font-family: 'Malow-Display', sans-serif;
+    font-size: 2.8em;
+    color: var(--text-accent);
+    text-shadow: 0 0 8px rgba(127, 109, 242, 0.7);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Navigation */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 4px;
+}
+
+.navStyle ul li a {
+    color: var(--text-normal);
+    position: relative;
+    padding: 8px 12px;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+}
+
+.navStyle ul li a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--text-accent);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+.navStyle ul li a:hover::after,
+.navStyle ul li.active a::after {
+    width: 80%;
+    opacity: 1;
+}
+
+.navStyle ul li a:hover,
+.navStyle > li.active > a,
+.navStyle > li.active > a:hover,
+.navbar-inverse .navbar-nav > li > a:hover, 
+.navbar-inverse .navbar-nav > li > a:focus,
+.navbar-inverse .navbar-nav > .active > a, 
+.navbar-inverse .navbar-nav > .active > a:hover, 
+.navbar-inverse .navbar-nav > .active > a:focus {
+    color: var(--text-accent);
+    background-color: rgba(127, 109, 242, 0.08);
+}
+
+/* Hero Section */
+.top_cont_outer {
+    background: var(--hero-background);
+    border-bottom: 1px solid var(--background-modifier-border);
+    position: relative;
+}
+
+.top_cont_outer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-hero);
+    pointer-events: none;
+}
+
+.top_left_cont h2 {
+    color: var(--text-normal);
+}
+
+.top_left_cont h2 strong {
+    color: var(--text-accent);
+}
+
+.top_left_cont p {
+    color: var(--text-muted);
+}
+
+a.read_more2 {
+    background: transparent;
+    color: var(--text-accent);
+    border: 1px solid var(--text-accent);
+}
+
+a.read_more2:hover {
+    background: var(--interactive-accent);
+    color: var(--text-normal);
+    border: 1px solid var(--interactive-accent);
+}
+
+/* Service Section */
+#service {
+    background: var(--service-background);
+    position: relative;
+}
+
+#service::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-service);
+    pointer-events: none;
+}
+
+.service_icon {
+    border: 2px solid var(--text-accent);
+    position: relative;
+}
+
+.service_icon.icon2,
+.service_icon.icon3 {
+    border: 2px solid var(--text-accent);
+}
+
+.service_icon i {
+    color: var(--text-accent);
+}
+
+/* About Section */
+#aboutUs {
+    background: var(--about-background);
+    position: relative;
+}
+
+#aboutUs::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-about);
+    pointer-events: none;
+}
+
+.inner_wrapper {
+    background: transparent;
+    position: relative;
+}
+
+.work_bottom span {
+    color: var(--text-muted);
+}
+
+.contact_btn {
+    background: var(--interactive-accent);
+    color: var(--text-normal);
+}
+
+.contact_btn:hover {
+    background: var(--interactive-accent-hover);
+}
+
+/* Portfolio Section */
+#Portfolio {
+    background: var(--portfolio-background);
+    position: relative;
+}
+
+#Portfolio::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-portfolio);
+    pointer-events: none;
+}
+
+#Portfolio .section-title h2 {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.portfolio_bottom {
+    background: var(--portfolio-background);
+    position: relative;
+}
+
+.portfolio_area h3 {
+    color: var(--text-accent);
+}
+
+/* Team Section */
+.team {
+    background: var(--team-background);
+    position: relative;
+}
+
+.team::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(127, 109, 242, 0.05) 0%, rgba(0, 0, 0, 0) 50%);
+    pointer-events: none;
+}
+
+.team_box {
+    background: var(--background-primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.team_box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(127, 109, 242, 0.2);
+}
+
+.team_box_shadow {
+    background: var(--background-primary-alt);
+}
+
+/* Client Section */
+#clients {
+    background: var(--clients-background);
+    position: relative;
+}
+
+#clients::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(127, 109, 242, 0.07) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+}
+
+/* Contact Section */
+.contact {
+    background: var(--contact-background);
+    position: relative;
+}
+
+.contact::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(225deg, rgba(127, 109, 242, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
+    pointer-events: none;
+}
+
+.form {
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.input-text, .input-btn {
+    background: var(--interactive-normal);
+    color: var(--text-normal);
+    border: 1px solid var(--background-modifier-border);
+}
+
+.input-btn {
+    background: var(--interactive-accent);
+}
+
+.input-btn:hover {
+    background: var(--interactive-accent-hover);
+}
+
+/* Footer */
+.footer_wrapper {
+    background: var(--background-secondary-alt);
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+.footer_bottom {
+    color: var(--text-muted);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-bg);
+    border-radius: 6px;
+    border: 3px solid var(--background-primary);
+}

@@ -1,0 +1,36 @@
+/* Additional fixes for centering titles */
+
+/* Ensure all section h2 headers are centered */
+h2 {
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Remove any inline-block styling that may affect centering */
+h2.section-title, 
+.section-title h2,
+#aboutUs h2, 
+#service h2, 
+#Portfolio h2, 
+.portfolio_title h2,
+#clients h2, 
+.team h2, 
+#team h2,
+#contact h2 {
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Ensure section dividers don't interfere with layout */
+section:not(#header_wrapper):not(.footer_wrapper) {
+    overflow: visible;
+    padding-bottom: 30px;
+}
+
+/* Make sure the header doesn't get affected by our section styling */
+#header_wrapper {
+    position: relative;
+    z-index: 1000;
+}

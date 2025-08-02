@@ -1,0 +1,129 @@
+/* Additional styles to improve the obsidian look and feel */
+
+/* Make the logo more prominent with animation */
+.logo-text {
+    position: relative;
+    display: inline-block;
+    color: #8875ff; /* Brighter purple */
+    text-shadow: 0 0 12px rgba(127, 109, 242, 0.6);
+    animation: pulse 3s infinite;
+    font-weight: bold;
+    background: linear-gradient(45deg, #7f6df2, #9f8eff, #7f6df2);
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 5s ease infinite, pulse 3s infinite;
+}
+
+@keyframes pulse {
+    0% { text-shadow: 0 0 10px rgba(127, 109, 242, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(136, 117, 255, 0.8); }
+    100% { text-shadow: 0 0 10px rgba(127, 109, 242, 0.5); }
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Add a hover effect to the logo */
+.logo a:hover .logo-text {
+    animation: pulse-fast 1s infinite;
+    text-shadow: 0 0 15px rgba(127, 109, 242, 0.8);
+}
+
+@keyframes pulse-fast {
+    0% { text-shadow: 0 0 10px rgba(127, 109, 242, 0.7); }
+    50% { text-shadow: 0 0 25px rgba(136, 117, 255, 1); }
+    100% { text-shadow: 0 0 10px rgba(127, 109, 242, 0.7); }
+}
+
+/* Service section enhancements */
+.service_icon {
+    border: 2px solid #7f6df2 !important; /* Obsidian accent */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.service_icon:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(127, 109, 242, 0.5);
+}
+
+.service_icon i {
+    color: #7f6df2 !important; /* Obsidian accent */
+}
+
+/* Button styling */
+.read_more2, .contact_btn, .input-btn {
+    background: #483699 !important; /* Obsidian interactive-accent */
+    color: #dcddde !important; /* Obsidian text-normal */
+    border: none !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.read_more2:hover, .contact_btn:hover, .input-btn:hover {
+    background: #4d3ca6 !important; /* Obsidian interactive-accent-hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Portfolio item styling */
+.item_overlay {
+    background: rgba(72, 54, 153, 0.8) !important; /* Obsidian interactive-accent with opacity */
+}
+
+/* Form input styling */
+.input-text {
+    background: #2a2a2a !important; /* Obsidian interactive-normal */
+    color: #dcddde !important; /* Obsidian text-normal */
+    border: 1px solid #333 !important; /* Obsidian background-modifier-border */
+}
+
+/* Section backgrounds */
+#aboutUs, .team, .contact {
+    background: #161616 !important; /* Obsidian background-secondary */
+}
+
+#service, #Portfolio, #clients {
+    background: #1a1a1a !important; /* Obsidian background-primary-alt */
+}
+
+/* Team member styling */
+.team_box {
+    background: #202020 !important; /* Obsidian background-primary */
+    border: 1px solid #333 !important; /* Obsidian background-modifier-border */
+}
+
+/* Footer styling */
+.footer_wrapper {
+    background: #000000 !important; /* Obsidian background-secondary-alt */
+}
+
+/* Navigation active item */
+.navStyle ul li.active a {
+    color: #8875ff !important; /* Obsidian text-accent-hover */
+    font-weight: bold;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
