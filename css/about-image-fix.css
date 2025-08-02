@@ -1,0 +1,56 @@
+/* About Me Image Enhancement */
+
+/* Make the About Me image larger and positioned further right */
+#aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right {
+    width: 38%; /* Slightly larger than the default */
+    padding-left: 20px; /* Add space between text and image */
+    margin-right: -10px; /* Push slightly more to the right */
+}
+
+/* Style the About Me image */
+#aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right img,
+.profile-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px; /* Rounded corners instead of circle */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    transform: scale(1.1); /* Make the image 10% larger */
+}
+
+/* Add subtle hover effect */
+#aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 30px rgba(127, 109, 242, 0.3);
+}
+
+/* Adjust the text column width to maintain proper layout */
+#aboutUs .col-lg-7.col-md-7.col-sm-7.col-xs-12.pull-left {
+    width: 58%; /* Adjusted to complement the image width */
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right {
+        width: 45%;
+        margin-right: 0;
+    }
+    
+    #aboutUs .col-lg-7.col-md-7.col-sm-7.col-xs-12.pull-left {
+        width: 52%;
+    }
+}
+
+@media (max-width: 768px) {
+    #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right,
+    #aboutUs .col-lg-7.col-md-7.col-sm-7.col-xs-12.pull-left {
+        width: 100%;
+        float: none;
+    }
+    
+    #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right {
+        margin: 0 auto 30px;
+        max-width: 350px;
+    }
+}

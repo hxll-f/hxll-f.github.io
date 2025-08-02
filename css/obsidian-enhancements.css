@@ -1,5 +1,16 @@
 /* Additional styles to improve the obsidian look and feel */
 
+/* Hero Section Image Enhancement */
+.hero_section .col-lg-7 img {
+    transition: all 0.5s ease;
+    /* Removed border, shadow, and border-radius */
+}
+
+.hero_section .col-lg-7 img:hover {
+    transform: translateY(-5px);
+    /* Removed shadow effect */
+}
+
 /* Make the logo more prominent with animation */
 .logo-text {
     position: relative;

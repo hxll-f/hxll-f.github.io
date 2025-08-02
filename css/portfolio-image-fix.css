@@ -1,0 +1,51 @@
+/* Portfolio image orientation fixes */
+
+/* General portfolio image container */
+.portfolio_img {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 240px; /* Fixed height for consistency */
+    background-color: rgba(0,0,0,0.2); /* Subtle background for empty spaces */
+}
+
+/* Make all images fit properly regardless of orientation */
+.portfolio_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover ensures the image covers the area without distortion */
+    object-position: center; /* Center the image within the container */
+    transition: all 0.5s ease;
+}
+
+/* Special handling for vertical images */
+.portfolio_img.vertical-image {
+    height: 320px; /* Give more height to vertical images */
+}
+
+/* Target specific vertical images */
+.portfolio-item[data-vertical="true"] .portfolio_img {
+    height: 320px;
+}
+
+/* Hover effects for images */
+.portfolio_img:hover img {
+    transform: scale(1.05);
+}
+
+/* Improve overlay appearance */
+.item_overlay {
+    background: rgba(0,0,0,0.7); /* Darker overlay for better text visibility */
+}
+
+.item_info h4 {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5); /* Better text visibility */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .portfolio_img, 
+    .portfolio-item[data-vertical="true"] .portfolio_img {
+        height: 200px; /* Consistent height on mobile */
+    }
+}
