@@ -114,12 +114,14 @@ h3 {
 @font-face {
     font-family: 'Malow-Display';
     src: url('../fonts/Malow-Display.woff2') format('woff2'),
-         url('../fonts/Malow-Display.woff') format('woff');
+         url('../fonts/Malow-Display.woff') format('woff'),
+         url('../fonts/Malow-Display.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 .logo-text {
-    font-family: 'Malow-Display', sans-serif;
+    font-family: 'Malow-Display', 'Arial Black', 'Helvetica Bold', sans-serif;
     font-size: 2.5em; /* Adjusted size for better visibility */
     color: #7f6df2; /* Obsidian text-accent - purple color for the logo */
     display: inline-block;
@@ -127,6 +129,7 @@ h3 {
     letter-spacing: 2px;
     padding: 0 8px;
     line-height: 1;
+    font-weight: bold;
 }
 
 h6 {
