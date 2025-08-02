@@ -1,0 +1,167 @@
+/* Contact Section Alignment Fixes */
+
+/* Ensure the contact section is properly centered */
+#contact.page_section {
+    padding: 50px 0;
+}
+
+/* Fix the contact section header alignment */
+.contact_section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.contact_section h2 {
+    margin-bottom: 30px;
+}
+
+/* Improve the layout of contact info */
+.contact_info {
+    padding: 25px;
+    background: rgba(26, 26, 26, 0.6);
+    border-radius: 5px;
+    border: 1px solid var(--background-modifier-border);
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.contact_info:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: rgba(127, 109, 242, 0.3);
+}
+
+.contact_info .detail {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.contact_info .detail h4 {
+    margin-bottom: 5px;
+    color: var(--text-accent);
+}
+
+/* Fix social links alignment */
+.social_links {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding-left: 0;
+}
+
+.social_links li {
+    margin: 0 10px;
+}
+
+/* Improve form styling */
+.form {
+    padding: 30px;
+    border-radius: 5px;
+    background: rgba(26, 26, 26, 0.6);
+    border: 1px solid var(--background-modifier-border);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    border-color: rgba(127, 109, 242, 0.3);
+}
+
+.input-text {
+    margin-bottom: 20px;
+    padding: 12px;
+    width: 100%;
+    background: var(--interactive-normal);
+    color: var(--text-normal);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.input-text:hover {
+    background: rgba(127, 109, 242, 0.05);
+    border-color: rgba(127, 109, 242, 0.3);
+}
+
+.input-text:focus {
+    background: var(--interactive-normal);
+    border-color: var(--text-accent);
+    box-shadow: 0 0 5px rgba(127, 109, 242, 0.3);
+    outline: none;
+}
+
+.text-area {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.input-btn {
+    padding: 12px 30px;
+    float: right;
+    background: var(--interactive-accent);
+    color: var(--text-normal);
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.input-btn:hover {
+    background: var(--interactive-accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix footer bottom alignment */
+.footer_bottom {
+    margin-top: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid var(--background-modifier-border);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.footer_bottom a {
+    color: var(--text-accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer_bottom a:hover {
+    color: var(--text-accent-hover);
+}
+
+.footer_bottom span {
+    margin: 5px 0;
+}
+
+/* Make responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .col-lg-4.wow.fadeInLeft,
+    .col-lg-8.wow.fadeInLeft {
+        text-align: center;
+    }
+    
+    .contact_info {
+        max-width: 400px;
+        margin: 0 auto 30px;
+    }
+    
+    .form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}

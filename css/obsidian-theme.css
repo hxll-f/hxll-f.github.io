@@ -37,6 +37,14 @@
     --scrollbar-bg: rgba(255, 255, 255, 0.05);
     --scrollbar-thumb-bg: rgba(255, 255, 255, 0.1);
     
+    /* Form Elements */
+    --form-background: rgba(26, 26, 26, 0.6);
+    --form-input-bg: rgba(45, 45, 45, 0.7);
+    --form-input-border: var(--background-modifier-border);
+    --form-input-hover: rgba(127, 109, 242, 0.05);
+    --form-button-bg: var(--interactive-accent);
+    --form-button-hover: var(--interactive-accent-hover);
+    
     /* Subtle gradient overlays */
     --gradient-hero: linear-gradient(135deg, rgba(127, 109, 242, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
     --gradient-about: linear-gradient(45deg, rgba(127, 109, 242, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
@@ -334,7 +342,7 @@ a.read_more2:hover {
 }
 
 .form {
-    background: rgba(26, 26, 26, 0.6);
+    background: var(--form-background);
     backdrop-filter: blur(5px);
     border: 1px solid var(--background-modifier-border);
     border-radius: 5px;
@@ -342,18 +350,31 @@ a.read_more2:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.input-text, .input-btn {
-    background: var(--interactive-normal);
+.input-text {
+    background: var(--form-input-bg);
     color: var(--text-normal);
-    border: 1px solid var(--background-modifier-border);
+    border: 1px solid var(--form-input-border);
+}
+
+.input-text:hover {
+    background: var(--form-input-hover);
+    border-color: rgba(127, 109, 242, 0.3);
+}
+
+.input-text:focus {
+    border-color: var(--text-accent);
+    box-shadow: 0 0 5px rgba(127, 109, 242, 0.3);
+    outline: none;
 }
 
 .input-btn {
-    background: var(--interactive-accent);
+    background: var(--form-button-bg);
+    color: var(--text-normal);
+    border: none;
 }
 
 .input-btn:hover {
-    background: var(--interactive-accent-hover);
+    background: var(--form-button-hover);
 }
 
 /* Footer */
