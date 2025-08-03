@@ -1,6 +1,32 @@
-<!--iframe for the VSCode server-->
-<iframe src="http://provided-karma.gl.at.ply.gg:49283" 
-        width="100%" 
-        height="100%" 
-        frameborder="0">
-</iframe>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting to Code Server...</title>
+    <meta http-equiv="refresh" content="3;url=http://provided-karma.gl.at.ply.gg:49283">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: #1e1e1e; 
+            color: white; 
+        }
+        .spinner { 
+            border: 4px solid #333; 
+            border-top: 4px solid #007acc; 
+            border-radius: 50%; 
+            width: 40px; 
+            height: 40px; 
+            animation: spin 1s linear infinite; 
+            margin: 20px auto; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <h1>🚀 Launching Code Server</h1>
+    <div class="spinner"></div>
+    <p>Redirecting you to the development environment...</p>
+    <p><a href="http://provided-karma.gl.at.ply.gg:49283">Click here if redirect doesn't work</a></p>
+</body>
+</html>
