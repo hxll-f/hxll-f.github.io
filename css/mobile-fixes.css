@@ -1,0 +1,92 @@
+/* Mobile-specific fixes */
+
+/* General mobile adjustments */
+@media only screen and (max-width: 768px) {
+    /* Fix hero section image positioning */
+    .hero-image-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .hero-image-container img {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    
+    /* Center About Me image */
+    .profile-image {
+        display: block;
+        margin: 0 auto 20px;
+        float: none !important;
+        max-width: 80%;
+    }
+    
+    /* Fix spacing between skills table */
+    .service_wrapper {
+        padding: 10px 0;
+    }
+    
+    .service_block {
+        margin-bottom: 30px;
+    }
+    
+    /* Remove border lines for skill table on mobile */
+    .borderLeft {
+        border-left: none !important;
+    }
+    
+    .borderTop {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+    
+    /* Fix spacing between links and form */
+    .social_links {
+        margin-bottom: 30px;
+    }
+    
+    /* Center "Send message" button text */
+    .input-btn {
+        text-align: center;
+        width: 100%;
+    }
+    
+    /* Fix navbar dropdown colors */
+    .navbar-inverse .navbar-nav > li > a,
+    .navbar-inverse .navbar-nav > .active > a {
+        background-color: #191919 !important; /* Match theme color */
+        color: #c6c6c6 !important;
+    }
+    
+    .navbar-inverse .navbar-nav > li > a:hover,
+    .navbar-inverse .navbar-nav > .active > a:hover {
+        color: #ffffff !important;
+    }
+    
+    /* Fix collapsed navbar */
+    .navbar-collapse {
+        background-color: #191919;
+        border-color: #333;
+    }
+}
+
+/* Photography click to show details instead of hover */
+.portfolio-item {
+    cursor: pointer;
+}
+
+/* Initially hide overlay on mobile */
+@media only screen and (max-width: 768px) {
+    .item_overlay {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s;
+    }
+    
+    /* Class to be toggled with JavaScript */
+    .item_overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
