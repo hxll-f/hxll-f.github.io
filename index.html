@@ -388,5 +388,30 @@
 <script type="text/javascript" src="js/mobile-fixes.js"></script>
 <!--<script type="text/javascript" src="js/portfolio-enhancements.js"></script>-->
 
+<script>
+// Mobile click-to-show overlay for portfolio images
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    document.querySelectorAll('.portfolio-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        // Hide all overlays first
+        document.querySelectorAll('.portfolio-item.show-overlay').forEach(function(i) {
+          if (i !== item) i.classList.remove('show-overlay');
+        });
+        // Toggle this overlay
+        item.classList.toggle('show-overlay');
+        e.stopPropagation();
+      });
+    });
+    // Hide overlays when clicking outside
+    document.body.addEventListener('click', function(e) {
+      document.querySelectorAll('.portfolio-item.show-overlay').forEach(function(i) {
+        i.classList.remove('show-overlay');
+      });
+    });
+  }
+});
+</script>
+
 </body>
 </html>

@@ -1757,11 +1757,18 @@ margin: 0px;
 }
 .navbar-inverse .navbar-nav > li > a {
 color: #222;
-background: #F9F9F9;
 }
-} 
-@media (max-width: 480px){ 
-.team_area {
-width: 99%;
+
+/* Remove skill table borders only on mobile */
+@media only screen and (max-width: 768px) {
+    .borderLeft { border-left: none; }
+    .borderTop {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 20px;
+        padding-top: 20px;
+    }
 }
+
+@media (max-width: 480px){
+    .team_area { width: 99%; }
 }
