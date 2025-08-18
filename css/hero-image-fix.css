@@ -31,18 +31,16 @@
     height: 100%;
     width: 100%;
     padding: 0; /* Removed padding that could affect alignment */
-    overflow: hidden; /* Prevent animated zoom from overflowing */
 }
 
 /* Make the image more proportional and ensure vertical alignment with text */
 .hero_section img {
     max-width: 100%;
-    height: auto;
-    max-height: 400px; /* keep desktop image contained */
-    object-fit: contain; /* preserve aspect ratio */
-    margin: auto; /* center image */
+    max-height: 450px;
+    object-fit: contain; /* This preserves aspect ratio */
+    margin: auto; /* Center the image */
     display: block;
-    transform: translateY(0);
+    transform: translateY(0); /* Ensures vertical alignment with text */
     position: relative;
 }
 
@@ -54,7 +52,7 @@
     }
     
     .hero_section img {
-        max-height: 240px; /* smaller on phones to prevent overflow */
-        margin-top: 20px;
+        max-height: 300px;
+        margin-top: 30px;
     }
 }

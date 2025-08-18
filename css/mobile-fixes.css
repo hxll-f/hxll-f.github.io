@@ -13,22 +13,18 @@
         justify-content: center;
         align-items: center;
     }
-    #hero_section .hero-image-container img {
-        max-width: 90vw;
-        height: auto;
-        margin: 0 auto;
-        display: block;
-    }
-
-    /* Center About Me image */
-    #aboutUs .profile-image {
-        display: block;
-        margin: 0 auto 20px;
-        float: none !important;
-        max-width: 80vw;
-    }
-
-    /* Fix spacing between skills table */
+  #hero_section .hero-image-container img {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }    /* Center About Me image */
+  #aboutUs .profile-image {
+    display: block;
+    margin: 20px auto;
+    float: none !important;
+    max-width: 80%;
+  }    /* Fix spacing between skills table */
     .service_wrapper { padding: 10px 0; }
     .service_block { margin-bottom: 30px; }
 
