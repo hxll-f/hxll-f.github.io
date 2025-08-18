@@ -13,10 +13,9 @@
     max-width: 100%;
     height: auto;
     display: block;
-    border-radius: 10px; /* Rounded corners instead of circle */
+    border-radius: 10px; /* Rounded corners */
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    transform: scale(1.1); /* Make the image 10% larger */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Add subtle hover effect */
@@ -43,14 +42,20 @@
 }
 
 @media (max-width: 768px) {
+    /* Stack image above text */
     #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right,
     #aboutUs .col-lg-7.col-md-7.col-sm-7.col-xs-12.pull-left {
         width: 100%;
         float: none;
     }
-    
     #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right {
-        margin: 0 auto 30px;
-        max-width: 350px;
+        margin: 0 auto 16px;
+        max-width: 420px;
+    }
+    /* Ensure image doesn't scale larger or overflow */
+    #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right img,
+    .profile-image {
+        width: 100%;
+        max-width: 100%;
     }
 }
