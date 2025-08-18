@@ -1,10 +1,8 @@
 /* About Me Image Enhancement */
 
-/* Make the About Me image larger and positioned further right */
+/* Keep default grid widths; just add spacing */
 #aboutUs .col-lg-4.col-md-4.col-sm-4.col-xs-12.pull-right {
-    width: 38%; /* Slightly larger than the default */
-    padding-left: 20px; /* Add space between text and image */
-    margin-right: -10px; /* Push slightly more to the right */
+    padding-left: 20px; /* space between text and image */
 }
 
 /* Style the About Me image */
@@ -16,7 +14,7 @@
     border-radius: 10px; /* Rounded corners instead of circle */
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
-    transform: scale(1.1); /* Make the image 10% larger */
+    transform: none; /* remove scaling that can misalign */
 }
 
 /* Add subtle hover effect */
@@ -25,10 +23,7 @@
     box-shadow: 0 12px 30px rgba(127, 109, 242, 0.3);
 }
 
-/* Adjust the text column width to maintain proper layout */
-#aboutUs .col-lg-7.col-md-7.col-sm-7.col-xs-12.pull-left {
-    width: 58%; /* Adjusted to complement the image width */
-}
+/* Use bootstrap column widths for text; no override */
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
