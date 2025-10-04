@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload to CDN</title>
+    <title>CDN Upload - hxll.de</title>
     <style>
         * {
             margin: 0;
@@ -12,22 +12,22 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
         .container {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
             max-width: 500px;
             width: 100%;
-            padding: 40px;
         }
 
         h1 {
@@ -42,25 +42,51 @@
             font-size: 14px;
         }
 
+        .auth-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            display: none;
+        }
+
+        .upload-section.active {
+            display: block;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
         .upload-area {
             border: 3px dashed #667eea;
             border-radius: 15px;
-            padding: 40px;
+            padding: 40px 20px;
             text-align: center;
-            background: #f8f9ff;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
+            transition: all 0.3s;
+            background: #f8f9ff;
         }
 
         .upload-area:hover {
-            border-color: #764ba2;
             background: #f0f2ff;
+            border-color: #764ba2;
         }
 
         .upload-area.dragover {
-            border-color: #764ba2;
             background: #e8ebff;
+            border-color: #764ba2;
             transform: scale(1.02);
         }
 
@@ -70,143 +96,122 @@
         }
 
         .upload-text {
-            color: #667eea;
+            color: #666;
             font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
-        .upload-hint {
+        .upload-subtext {
             color: #999;
             font-size: 13px;
         }
 
-        #fileInput {
+        input[type="file"] {
             display: none;
         }
 
-        .file-info {
-            background: #f8f9ff;
+        .btn {
+            width: 100%;
             padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .file-info.show {
-            display: block;
-        }
-
-        .file-name {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .file-size {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .upload-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             border: none;
-            padding: 15px 30px;
             border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: none;
+            transition: all 0.3s;
+            margin-top: 20px;
         }
 
-        .upload-btn.show {
-            display: block;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
-        .upload-btn:hover {
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .upload-btn:active {
-            transform: translateY(0);
-        }
-
-        .upload-btn:disabled {
+        .btn-primary:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .result {
-            background: #f0fdf4;
-            border: 2px solid #86efac;
-            padding: 20px;
-            border-radius: 10px;
             margin-top: 20px;
-            display: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
         }
 
-        .result.show {
-            display: block;
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
         .result.error {
-            background: #fef2f2;
-            border-color: #fca5a5;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        .result-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #166534;
+        .url-display {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .result.error .result-title {
-            color: #991b1b;
+        .url-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
         }
 
-        .cdn-url {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            word-break: break-all;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .copy-btn {
-            background: #22c55e;
+        .btn-copy {
+            padding: 10px 20px;
+            background: #28a745;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.2s ease;
         }
 
-        .copy-btn:hover {
-            background: #16a34a;
+        .btn-copy:hover {
+            background: #218838;
         }
 
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+        .quota-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e7f3ff;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #004085;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9ff;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
-        }
-
-        .loader.show {
-            display: block;
+            margin: 10px auto;
         }
 
         @keyframes spin {
@@ -217,52 +222,54 @@
 </head>
 <body>
     <div class="container">
-        <h1>📤 CDN Upload</h1>
-        <p class="subtitle">Upload images and videos for Discord</p>
+        <h1>🚀 CDN Upload</h1>
+        <p class="subtitle">Secure file upload to hxll.de CDN</p>
 
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">☁️</div>
-            <div class="upload-text">Click or drag file here</div>
-            <div class="upload-hint">Max 100MB • Images & Videos only</div>
+        <div class="auth-section" id="authSection">
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter upload password">
+            <button class="btn btn-primary" onclick="authenticate()">Authenticate</button>
+            <div id="authResult"></div>
         </div>
 
-        <input type="file" id="fileInput" accept="image/*,video/*">
-
-        <div class="file-info" id="fileInfo">
-            <div class="file-name" id="fileName"></div>
-            <div class="file-size" id="fileSize"></div>
-        </div>
-
-        <button class="upload-btn" id="uploadBtn">Upload to CDN</button>
-
-        <div class="loader" id="loader"></div>
-
-        <div class="result" id="result">
-            <div class="result-title" id="resultTitle">✅ Upload successful!</div>
-            <div class="cdn-url" id="cdnUrl"></div>
-            <button class="copy-btn" id="copyBtn">Copy URL</button>
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Click to select or drag & drop</div>
+                <div class="upload-subtext">Images and videos only</div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*,video/*">
+            <div class="file-info" id="fileInfo" style="display: none;"></div>
+            <button class="btn btn-primary" id="uploadBtn" style="display: none;" onclick="uploadFile()">Upload File</button>
+            <div id="result"></div>
         </div>
     </div>
 
     <script>
+        let selectedFile = null;
+        let uploadPassword = null;
+
+        async function authenticate() {
+            const password = document.getElementById('passwordInput').value;
+            const resultDiv = document.getElementById('authResult');
+
+            if (!password) {
+                resultDiv.innerHTML = '<div class="result error">Please enter a password</div>';
+                return;
+            }
+
+            uploadPassword = password;
+            
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('uploadSection').classList.add('active');
+        }
+
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
         const uploadBtn = document.getElementById('uploadBtn');
-        const loader = document.getElementById('loader');
-        const result = document.getElementById('result');
-        const resultTitle = document.getElementById('resultTitle');
-        const cdnUrl = document.getElementById('cdnUrl');
-        const copyBtn = document.getElementById('copyBtn');
+        const fileInfo = document.getElementById('fileInfo');
 
-        let selectedFile = null;
-
-        // Click to upload
         uploadArea.addEventListener('click', () => fileInput.click());
 
-        // Drag and drop
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('dragover');
@@ -275,91 +282,108 @@
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
+            
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 handleFileSelect(files[0]);
             }
         });
 
-        // File input change
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 handleFileSelect(e.target.files[0]);
             }
         });
 
-        // Handle file selection
         function handleFileSelect(file) {
             selectedFile = file;
-            fileName.textContent = file.name;
-            fileSize.textContent = formatFileSize(file.size);
-            fileInfo.classList.add('show');
-            uploadBtn.classList.add('show');
-            result.classList.remove('show');
+            const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+            fileInfo.style.display = 'block';
+            fileInfo.innerHTML = `<strong>Selected:</strong> ${file.name} (${sizeMB} MB)`;
+            uploadBtn.style.display = 'block';
         }
 
-        // Upload button click
-        uploadBtn.addEventListener('click', async () => {
-            if (!selectedFile) return;
+        async function uploadFile() {
+            if (!selectedFile) {
+                showResult('Please select a file', 'error');
+                return;
+            }
 
+            if (!uploadPassword) {
+                showResult('Authentication required', 'error');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
             uploadBtn.disabled = true;
-            uploadBtn.textContent = 'Uploading...';
-            loader.classList.add('show');
-            result.classList.remove('show');
-
-            const formData = new FormData();
-            formData.append('file', selectedFile);
+            resultDiv.innerHTML = '<div class="result"><div class="spinner"></div>Uploading...</div>';
 
             try {
-                const response = await fetch('https://cdn-upload-worker.inqueries-hxll.workers.dev', {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const response = await fetch('https://cdn-upload-worker.inqueries-hxll.workers.dev/', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'X-Upload-Password': uploadPassword
+                    }
                 });
 
                 const data = await response.json();
 
-                if (data.success) {
-                    cdnUrl.textContent = data.url;
-                    result.classList.remove('error');
-                    result.classList.add('show');
-                    resultTitle.textContent = '✅ Upload successful!';
+                if (response.ok && data.success) {
+                    let resultHTML = `
+                        <div class="result success">
+                            <strong>✅ Upload successful!</strong>
+                            <div class="url-display">
+                                <input type="text" class="url-input" id="cdnUrl" value="${data.url}" readonly>
+                                <button class="btn-copy" onclick="copyUrl()">Copy</button>
+                            </div>
+                    `;
                     
-                    // Reset form
+                    if (data.quota) {
+                        resultHTML += `
+                            <div class="quota-info">
+                                <strong>Monthly Quota:</strong> ${data.quota.used} used / ${data.quota.remaining} remaining
+                            </div>
+                        `;
+                    }
+                    
+                    resultHTML += '</div>';
+                    resultDiv.innerHTML = resultHTML;
+                    
+                    // Reset file selection
                     selectedFile = null;
                     fileInput.value = '';
-                    fileInfo.classList.remove('show');
-                    uploadBtn.classList.remove('show');
+                    fileInfo.style.display = 'none';
+                    uploadBtn.style.display = 'none';
                 } else {
-                    throw new Error(data.error || 'Upload failed');
+                    showResult(data.error || 'Upload failed', 'error');
                 }
             } catch (error) {
-                result.classList.add('error', 'show');
-                resultTitle.textContent = '❌ Upload failed';
-                cdnUrl.textContent = error.message;
-                copyBtn.style.display = 'none';
+                showResult('Network error: ' + error.message, 'error');
             } finally {
-                loader.classList.remove('show');
                 uploadBtn.disabled = false;
-                uploadBtn.textContent = 'Upload to CDN';
             }
-        });
+        }
 
-        // Copy URL
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(cdnUrl.textContent);
-            copyBtn.textContent = '✓ Copied!';
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        function copyUrl() {
+            const urlInput = document.getElementById('cdnUrl');
+            urlInput.select();
+            document.execCommand('copy');
+            
+            const copyBtn = event.target;
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
             setTimeout(() => {
-                copyBtn.textContent = 'Copy URL';
+                copyBtn.textContent = originalText;
             }, 2000);
-        });
-
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
     </script>
 </body>
