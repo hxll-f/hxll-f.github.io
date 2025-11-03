@@ -340,18 +340,25 @@
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    showStatus('✅ Upload successful!', 'success');
-                    status.innerHTML += `
-                        <div class="result-url">${result.url}</div>
-                        <button class="copy-btn" onclick="copyToClipboard('${result.url}')">Copy URL</button>
-                    `;
-                    
+                    const safeUrl = validateCdnUrl(result.url);
+
+                    if (!safeUrl) {
+                        showStatus('❌ Upload failed: Unexpected response.', 'error');
+                        uploadBtn.disabled = false;
+                        return;
+                    }
+
+                    renderSuccess(safeUrl);
+
                     // Reset form
                     selectedFile = null;
                     fileInput.value = '';
                     fileInfo.style.display = 'none';
                 } else {
-                    showStatus(`❌ Upload failed: ${result.error || 'Unknown error'}`, 'error');
+                    const errorMessage = typeof result.error === 'string' && result.error.trim() !== ''
+                        ? result.error
+                        : 'Unknown error';
+                    showStatus(`❌ Upload failed: ${errorMessage}`, 'error');
                     uploadBtn.disabled = false;
                 }
             } catch (error) {
@@ -363,9 +370,44 @@
         });
 
         function showStatus(message, type) {
+            status.innerHTML = '';
             status.textContent = message;
             status.className = `status ${type}`;
             status.style.display = 'block';
+        }
+
+        function renderSuccess(url) {
+            status.innerHTML = '';
+            status.className = 'status success';
+            status.style.display = 'block';
+
+            const message = document.createElement('div');
+            message.textContent = '✅ Upload successful!';
+            status.appendChild(message);
+
+            const urlContainer = document.createElement('div');
+            urlContainer.className = 'result-url';
+            urlContainer.textContent = url;
+            status.appendChild(urlContainer);
+
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-btn';
+            copyButton.type = 'button';
+            copyButton.textContent = 'Copy URL';
+            copyButton.addEventListener('click', () => copyToClipboard(url));
+            status.appendChild(copyButton);
+        }
+
+        function validateCdnUrl(url) {
+            try {
+                const parsed = new URL(url);
+                if (parsed.origin !== 'https://cdn.hxll.de') {
+                    return null;
+                }
+                return parsed.href;
+            } catch (err) {
+                return null;
+            }
         }
 
         function copyToClipboard(text) {
