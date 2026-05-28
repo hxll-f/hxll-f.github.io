@@ -213,10 +213,10 @@
 <section class="hero">
   <div class="container">
     <img
-      src="../assets/r8lms.png"
-      alt="Audi R8 LMS"
+      alt="Trackmania car skin"
       class="hero-img"
       id="heroImg"
+      style="display:none"
       onerror="this.style.display='none'"
     >
     <div class="hero-handle">HxLL_F</div>
@@ -296,7 +296,7 @@
   'use strict';
 
   /* ── Config ──────────────────────────────────────────── */
-  const WORKER_URL = 'https://YOUR_WORKER.workers.dev';
+  const WORKER_URL = 'https://aged-bar-5622.inqueries-hxll.workers.dev/tm-profile';
   const PLAYER_UUID = 'e246130e-0b2a-4599-8407-34600d1e3b72';
 
   /* ── Maniascript color‑code parser ───────────────────── */
@@ -423,6 +423,14 @@
   async function loadProfile() {
     try {
       const data = await api('/player/' + PLAYER_UUID);
+      const heroImg = document.getElementById('heroImg');
+      const skinUrl = data.skinUrl || data.skin_url || data.skin || data.carSkinUrl || data.car_skin_url || data.carImage || data.car_image || '';
+      if (skinUrl) {
+        heroImg.src = skinUrl;
+        heroImg.style.display = '';
+      } else {
+        heroImg.style.display = 'none';
+      }
       const clubTag = data.clubTag || data.club_tag || '';
       if (clubTag) {
         document.getElementById('clubTag').innerHTML = parseManiascript(clubTag);
