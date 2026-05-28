@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HxLL_F — Player Card</title>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="HxLL_F — Player Card">
+  <meta property="og:description" content="TrackMania player card for HxLL_F">
+  <meta property="og:url" content="https://hxll.de/card/">
+
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+
+  <style>
+    /* ── Reset & base ────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary:   #202020;
+      --bg-card:      #1a1a1a;
+      --bg-section:   #161616;
+      --border:       #333;
+      --accent:       #7f6df2;
+      --accent-hover: #8875ff;
+      --text:         #dcddde;
+      --text-muted:   #999;
+      --text-faint:   #666;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Utilities ────────────────────────────────────────── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 1rem; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      background: linear-gradient(135deg, rgba(127,109,242,.12) 0%, transparent 60%);
+    }
+
+    .hero-img {
+      max-width: 340px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 4px 24px rgba(127,109,242,.25));
+    }
+
+    .hero-handle {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-shadow: 0 0 12px rgba(127,109,242,.5);
+    }
+
+    .hero-club {
+      font-size: 1.15rem;
+      margin-top: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    .hero-zone {
+      font-size: 0.95rem;
+      color: var(--text-faint);
+      margin-top: 0.35rem;
+    }
+
+    /* ── Stat grid ────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-box {
+      background: var(--bg-section);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 0.25rem;
+    }
+
+    /* ── Chart container ──────────────────────────────────── */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .chart-wrap canvas { width: 100% !important; }
+
+    /* ── Recent records table ─────────────────────────────── */
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .records-table th,
+    .records-table td {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .records-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+    }
+
+    .records-table tbody tr:hover { background: rgba(127,109,242,.06); }
+
+    /* ── Loading / error states ───────────────────────────── */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-faint);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 28px; height: 28px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin-bottom: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      text-align: center;
+      color: #e06c75;
+      padding: 1rem;
+    }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    .page-footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-faint);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    .page-footer a { color: var(--accent); text-decoration: none; }
+    .page-footer a:hover { color: var(--accent-hover); }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero-handle { font-size: 2rem; }
+      .card { padding: 1.25rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <img
+      src="../assets/r8lms.png"
+      alt="Audi R8 LMS"
+      class="hero-img"
+      id="heroImg"
+      onerror="this.style.display='none'"
+    >
+    <div class="hero-handle">HxLL_F</div>
+    <div class="hero-club" id="clubTag"><!-- filled by JS --></div>
+    <div class="hero-zone" id="zoneInfo"><!-- filled by JS --></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     OVERVIEW STATS
+     ════════════════════════════════════════════════════════ -->
+<section class="container">
+  <div class="card" id="statsCard">
+    <div class="section-title">Overview</div>
+    <div class="loading" id="statsLoading">
+      <div class="spinner"></div>
+      <div>Loading stats&hellip;</div>
+    </div>
+    <div class="stats-grid" id="statsGrid" style="display:none"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     MATCHMAKING / RANK CHART
+     ════════════════════════════════════════════════════════ -->
+<section class="container">
+  <div class="card">
+    <div class="section-title">Matchmaking History</div>
+    <div class="loading" id="chartLoading">
+      <div class="spinner"></div>
+      <div>Loading chart&hellip;</div>
+    </div>
+    <div class="chart-wrap" id="chartWrap" style="display:none">
+      <canvas id="mmChart" height="260"></canvas>
+    </div>
+    <div class="error-msg" id="chartError" style="display:none"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     RECENT RECORDS
+     ════════════════════════════════════════════════════════ -->
+<section class="container">
+  <div class="card">
+    <div class="section-title">Recent Records</div>
+    <div class="loading" id="recordsLoading">
+      <div class="spinner"></div>
+      <div>Loading records&hellip;</div>
+    </div>
+    <div id="recordsWrap" style="display:none; overflow-x:auto">
+      <table class="records-table">
+        <thead>
+          <tr>
+            <th>Map</th>
+            <th>Time</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody id="recordsBody"></tbody>
+      </table>
+    </div>
+    <div class="error-msg" id="recordsError" style="display:none"></div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <a href="../">← Back to hxll.de</a>
+  &nbsp;·&nbsp; Data via <a href="https://trackmania.io" target="_blank" rel="noopener">Trackmania.io</a> API
+</footer>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPTS
+     ════════════════════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Config ──────────────────────────────────────────── */
+  const WORKER_URL = 'https://YOUR_WORKER.workers.dev';
+  const PLAYER_UUID = 'e246130e-0b2a-4599-8407-34600d1e3b72';
+
+  /* ── Maniascript color‑code parser ───────────────────── */
+  /**
+   * Converts a TrackMania / ManiaPlanet formatted string
+   * (using $ color codes) into an HTML string with inline
+   * <span> styles.
+   *
+   * Supported codes:
+   *   $RGB  — 3‑char hex colour  (e.g. $F00 = red)
+   *   $z    — reset to default
+   *   $o    — bold
+   *   $i    — italic
+   *   $s    — shadowed text (text‑shadow)
+   *   $w    — wide (letter‑spacing)
+   *   $n    — narrow (letter‑spacing: ‑1px)
+   *   $t    — uppercase
+   *   $g    — reset colour (not all styles)
+   *   $$    — literal $
+   */
+  function parseManiascript(raw) {
+    if (!raw) return '';
+
+    let result = '';
+    let color = null;
+    let bold = false;
+    let italic = false;
+    let shadow = false;
+    let wide = false;
+    let narrow = false;
+    let upper = false;
+    let i = 0;
+
+    function openSpan() {
+      const styles = [];
+      if (color)   styles.push('color:' + color);
+      if (bold)    styles.push('font-weight:700');
+      if (italic)  styles.push('font-style:italic');
+      if (shadow)  styles.push('text-shadow:1px 1px 2px rgba(0,0,0,.7)');
+      if (wide)    styles.push('letter-spacing:2px');
+      if (narrow)  styles.push('letter-spacing:-1px');
+      if (upper)   styles.push('text-transform:uppercase');
+      if (styles.length) return '<span style="' + styles.join(';') + '">';
+      return '<span>';
+    }
+
+    while (i < raw.length) {
+      if (raw[i] === '$' && i + 1 < raw.length) {
+        const next = raw[i + 1];
+
+        // $$ → literal $
+        if (next === '$') { result += '$'; i += 2; continue; }
+
+        // 3‑char hex colour
+        if (/^[0-9a-fA-F]{3}$/.test(raw.substring(i + 1, i + 4))) {
+          const r = raw[i + 1], g = raw[i + 2], b = raw[i + 3];
+          color = '#' + r + r + g + g + b + b;
+          i += 4; continue;
+        }
+
+        const code = next.toLowerCase();
+        switch (code) {
+          case 'z': color = null; bold = false; italic = false;
+                    shadow = false; wide = false; narrow = false; upper = false;
+                    i += 2; continue;
+          case 'g': color = null; i += 2; continue;
+          case 'o': bold = true;   i += 2; continue;
+          case 'i': italic = true; i += 2; continue;
+          case 's': shadow = true; i += 2; continue;
+          case 'w': wide = true; narrow = false; i += 2; continue;
+          case 'n': narrow = true; wide = false;  i += 2; continue;
+          case 't': upper = true;  i += 2; continue;
+          case 'l': case 'h':
+            // $l / $h — link codes: skip until next $l/$h or end
+            i += 2;
+            // skip bracketed content
+            if (i < raw.length && raw[i] === '[') {
+              const close = raw.indexOf(']', i);
+              if (close !== -1) i = close + 1;
+            }
+            continue;
+          default:
+            // unknown code, just skip the $X
+            i += 2; continue;
+        }
+      }
+
+      // Regular character — wrap in styled span
+      const escaped = raw[i].replace(/&/g, '&amp;')
+                             .replace(/</g, '&lt;')
+                             .replace(/>/g, '&gt;');
+      result += openSpan() + escaped + '</span>';
+      i++;
+    }
+
+    return result;
+  }
+
+  /* ── Helpers ─────────────────────────────────────────── */
+  function msToTime(ms) {
+    if (ms == null) return '—';
+    const totalSec = ms / 1000;
+    const min = Math.floor(totalSec / 60);
+    const sec = (totalSec % 60).toFixed(3);
+    return (min > 0 ? min + ':' : '') + (min > 0 && parseFloat(sec) < 10 ? '0' : '') + sec;
+  }
+
+  function show(id)  { document.getElementById(id).style.display = ''; }
+  function hide(id)  { document.getElementById(id).style.display = 'none'; }
+
+  function setError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = '';
+  }
+
+  async function api(path) {
+    const resp = await fetch(WORKER_URL + path);
+    if (!resp.ok) throw new Error('API error ' + resp.status);
+    return resp.json();
+  }
+
+  /* ── Fetch & render player profile ───────────────────── */
+  async function loadProfile() {
+    try {
+      const data = await api('/player/' + PLAYER_UUID);
+      const clubTag = data.clubTag || data.club_tag || '';
+      if (clubTag) {
+        document.getElementById('clubTag').innerHTML = parseManiascript(clubTag);
+      }
+      const zone = data.trophies && data.trophies.zone
+        ? (typeof data.trophies.zone === 'string'
+            ? data.trophies.zone
+            : formatZonePath(data.trophies.zone))
+        : '';
+      if (zone) {
+        document.getElementById('zoneInfo').textContent = zone;
+      }
+    } catch (_) {
+      // Non‑critical — club tag just stays empty
+    }
+  }
+
+  function formatZonePath(zone) {
+    if (!zone) return '';
+    const parts = [];
+    let z = zone;
+    while (z) {
+      if (z.name) parts.push(z.name);
+      z = z.parent;
+    }
+    return parts.reverse().join(' › ');
+  }
+
+  /* ── Fetch & render overview stats ───────────────────── */
+  async function loadStats() {
+    try {
+      const data = await api('/player/' + PLAYER_UUID);
+      hide('statsLoading');
+
+      const trophies = data.trophies || {};
+      const totalTrophies = (trophies.counts || []).reduce(function (s, v) { return s + v; }, 0);
+      const mmData = data.matchmaking || [];
+
+      const items = [
+        { label: 'Trophies', value: totalTrophies.toLocaleString() },
+      ];
+
+      // Extract matchmaking ranks
+      for (let j = 0; j < mmData.length; j++) {
+        const mm = mmData[j];
+        const typeName = mm.info && mm.info.typename ? mm.info.typename : (mm.typeName || ('MM ' + (j + 1)));
+        items.push({ label: typeName, value: mm.rank ? '#' + mm.rank.toLocaleString() : (mm.score || '—') });
+      }
+
+      // If no MM data, show placeholder
+      if (items.length === 1) {
+        items.push({ label: 'Rank', value: '—' });
+      }
+
+      const grid = document.getElementById('statsGrid');
+      for (let k = 0; k < items.length; k++) {
+        var box = document.createElement('div');
+        box.className = 'stat-box';
+        box.innerHTML = '<div class="stat-value">' + escapeHtml(items[k].value) + '</div>' +
+                        '<div class="stat-label">' + escapeHtml(items[k].label) + '</div>';
+        grid.appendChild(box);
+      }
+      show('statsGrid');
+    } catch (e) {
+      hide('statsLoading');
+      setError('statsGrid', 'Could not load stats.');
+      document.getElementById('statsGrid').className = 'error-msg';
+      show('statsGrid');
+    }
+  }
+
+  function escapeHtml(str) {
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
+
+  /* ── Fetch & render matchmaking chart ────────────────── */
+  async function loadChart() {
+    try {
+      const history = await api('/player/' + PLAYER_UUID + '/mm-history');
+      hide('chartLoading');
+
+      if (!history || !history.length) {
+        setError('chartError', 'No matchmaking history available.');
+        return;
+      }
+
+      const labels = history.map(function (h, i) { return i + 1; });
+      const scores = history.map(function (h) { return h.score || h.mmScore || 0; });
+
+      show('chartWrap');
+      var ctx = document.getElementById('mmChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'MM Score',
+            data: scores,
+            borderColor: '#7f6df2',
+            backgroundColor: 'rgba(127,109,242,.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 2,
+            pointHoverRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#dcddde' } }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Match', color: '#999' },
+              ticks: { color: '#999' },
+              grid:  { color: 'rgba(255,255,255,.06)' }
+            },
+            y: {
+              title: { display: true, text: 'Score', color: '#999' },
+              ticks: { color: '#999' },
+              grid:  { color: 'rgba(255,255,255,.06)' }
+            }
+          }
+        }
+      });
+    } catch (_) {
+      hide('chartLoading');
+      setError('chartError', 'Could not load matchmaking history.');
+    }
+  }
+
+  /* ── Fetch & render recent records ───────────────────── */
+  async function loadRecords() {
+    try {
+      const records = await api('/player/' + PLAYER_UUID + '/records');
+      hide('recordsLoading');
+
+      if (!records || !records.length) {
+        setError('recordsError', 'No recent records found.');
+        return;
+      }
+
+      var tbody = document.getElementById('recordsBody');
+      var count = Math.min(records.length, 20);
+      for (var r = 0; r < count; r++) {
+        var rec = records[r];
+        var tr = document.createElement('tr');
+
+        var tdMap = document.createElement('td');
+        tdMap.textContent = rec.mapName || rec.map || '—';
+        tr.appendChild(tdMap);
+
+        var tdTime = document.createElement('td');
+        tdTime.textContent = msToTime(rec.time || rec.recordScore || rec.score);
+        tr.appendChild(tdTime);
+
+        var tdPos = document.createElement('td');
+        tdPos.textContent = rec.position != null ? '#' + rec.position : '—';
+        tr.appendChild(tdPos);
+
+        tbody.appendChild(tr);
+      }
+      show('recordsWrap');
+    } catch (_) {
+      hide('recordsLoading');
+      setError('recordsError', 'Could not load records.');
+    }
+  }
+
+  /* ── Init ────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    loadProfile();
+    loadStats();
+    loadChart();
+    loadRecords();
+  });
+})();
+</script>
+</body>
+</html>
