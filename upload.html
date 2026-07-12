@@ -226,10 +226,10 @@
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">☁️</div>
             <div class="upload-text">Click to select or drag & drop</div>
-            <div class="upload-hint">Images and videos only</div>
+            <div class="upload-hint">Any file type</div>
         </div>
-        
-        <input type="file" id="fileInput" accept="image/*,video/*">
+
+        <input type="file" id="fileInput">
         
         <div class="file-info" id="fileInfo">
             <div class="file-name" id="fileName"></div>
@@ -287,14 +287,6 @@
 
         function handleFile(file) {
             if (!file) return;
-
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 
-                                'video/mp4', 'video/webm', 'video/quicktime', 'video/x-matroska'];
-            
-            if (!allowedTypes.includes(file.type)) {
-                showStatus('Invalid file type. Please select an image or video.', 'error');
-                return;
-            }
 
             selectedFile = file;
             fileName.textContent = file.name;
