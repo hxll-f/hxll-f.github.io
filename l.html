@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hxll.de/l</title>
+<script>
+  // Runs synchronously before paint, so the form never flashes on redirect links.
+  if (window.location.search.length > 1) {
+    document.documentElement.classList.add('has-code');
+  }
+</script>
 <style>
   :root {
     --bg: #0d1117;
@@ -188,34 +194,50 @@
     margin-top: 14px;
     line-height: 1.5;
   }
+
+  #redirect-view {
+    display: none;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  html.has-code #shorten-view { display: none; }
+  html.has-code #redirect-view { display: block; }
 </style>
 </head>
 <body>
 
   <div class="card">
     <p class="eyebrow">hxll.de</p>
-    <h1>shorten a link<span class="caret"></span></h1>
 
-    <form id="shorten-form">
-      <input
-        type="url"
-        id="url-input"
-        placeholder="https://example.com/very/long/path"
-        required
-        autocomplete="off"
-        spellcheck="false"
-      >
-      <button type="submit" id="submit-btn">Shorten</button>
-    </form>
+    <div id="shorten-view">
+      <h1>shorten a link<span class="caret"></span></h1>
 
-    <div class="result" id="result">
-      <a id="result-link" href="#" target="_blank" rel="noopener"></a>
-      <button class="copy-btn" id="copy-btn" type="button">Copy</button>
+      <form id="shorten-form">
+        <input
+          type="url"
+          id="url-input"
+          placeholder="https://example.com/very/long/path"
+          required
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <button type="submit" id="submit-btn">Shorten</button>
+      </form>
+
+      <div class="result" id="result">
+        <a id="result-link" href="#" target="_blank" rel="noopener"></a>
+        <button class="copy-btn" id="copy-btn" type="button">Copy</button>
+      </div>
+
+      <div class="error" id="error"></div>
+
+      <p class="hint">Paste a URL, hit shorten (or press Enter). Same URL always gives the same short link.</p>
     </div>
 
-    <div class="error" id="error"></div>
-
-    <p class="hint">Paste a URL, hit shorten (or press Enter). Same URL always gives the same short link.</p>
+    <div id="redirect-view">
+      <p id="redirect-status">redirecting…</p>
+    </div>
   </div>
 
   <script>
@@ -280,15 +302,11 @@
         }
 
         const data = await response.json();
-
-        // ASSUMPTION: adjust this to match your Worker's actual response shape.
-        const code = data.code || data.shortCode || data.id;
-        if (!code) {
-          throw new Error('Response did not include a short code.');
+        if (!data.shortUrl) {
+          throw new Error('Response did not include a short URL.');
         }
 
-        const shortUrl = `https://hxll.de/l?${code}`;
-        showResult(shortUrl);
+        showResult(data.shortUrl);
 
       } catch (err) {
         // Fallback: network failure, CORS issue, bad JSON, non-2xx, etc.
@@ -301,6 +319,40 @@
         setLoading(false);
       }
     });
+
+    // If this page was opened as hxll.de/l?[code], resolve and redirect instead
+    // of showing the shortener form.
+    (async function resolveIfCode() {
+      const code = window.location.search.slice(1); // everything after '?'
+      if (!code) return;
+
+      const statusEl = document.getElementById('redirect-status');
+
+      try {
+        const resp = await fetch(`${WORKER_URL}?code=${encodeURIComponent(code)}`);
+
+        if (resp.status === 404) {
+          statusEl.textContent = "this link doesn't exist (or was mistyped).";
+          return;
+        }
+        if (!resp.ok) {
+          throw new Error(`Server returned ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        if (!data.url) {
+          throw new Error('No destination URL in response.');
+        }
+
+        document.title = 'Redirecting…';
+        window.location.replace(data.url);
+
+      } catch (err) {
+        // Fallback: network failure or bad response — tell the user rather
+        // than leaving them stuck on a blank "redirecting…" message.
+        statusEl.textContent = 'could not resolve this link. try again in a moment.';
+      }
+    })();
 
     copyBtn.addEventListener('click', async () => {
       try {
