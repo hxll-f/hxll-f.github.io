@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hxll.de/l</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --muted: #6e7681;
+    --accent: #e3b341;
+    --accent-dim: #a8842a;
+    --error: #f85149;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .eyebrow {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    margin: 0 0 4px;
+  }
+
+  .eyebrow::before {
+    content: "$ ";
+    color: var(--accent-dim);
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 24px;
+    color: var(--text);
+  }
+
+  h1 .caret {
+    display: inline-block;
+    width: 9px;
+    height: 1.1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    h1 .caret { animation: none; }
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  form {
+    display: flex;
+    gap: 8px;
+  }
+
+  input[type="url"] {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    outline: none;
+    min-width: 0;
+  }
+
+  input[type="url"]::placeholder {
+    color: var(--muted);
+  }
+
+  input[type="url"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(227, 179, 65, 0.15);
+  }
+
+  button {
+    background: var(--accent);
+    color: #1a1305;
+    border: none;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+
+  button:hover:not(:disabled) {
+    background: #f0c25b;
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: default;
+  }
+
+  .result, .error {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .result {
+    background: var(--panel);
+    border: 1px solid var(--accent-dim);
+  }
+
+  .result a {
+    color: var(--accent);
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  .result a:hover {
+    text-decoration: underline;
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 10px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .copy-btn:hover:not(:disabled) {
+    background: var(--border);
+    color: var(--text);
+  }
+
+  .copy-btn.copied {
+    border-color: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .error {
+    background: rgba(248, 81, 73, 0.08);
+    border: 1px solid var(--error);
+    color: var(--error);
+  }
+
+  .hint {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <p class="eyebrow">hxll.de</p>
+    <h1>shorten a link<span class="caret"></span></h1>
+
+    <form id="shorten-form">
+      <input
+        type="url"
+        id="url-input"
+        placeholder="https://example.com/very/long/path"
+        required
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <button type="submit" id="submit-btn">Shorten</button>
+    </form>
+
+    <div class="result" id="result">
+      <a id="result-link" href="#" target="_blank" rel="noopener"></a>
+      <button class="copy-btn" id="copy-btn" type="button">Copy</button>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <p class="hint">Paste a URL, hit shorten (or press Enter). Same URL always gives the same short link.</p>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://link-shortener.inqueries-hxll.workers.dev/';
+
+    const form = document.getElementById('shorten-form');
+    const input = document.getElementById('url-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const resultBox = document.getElementById('result');
+    const resultLink = document.getElementById('result-link');
+    const copyBtn = document.getElementById('copy-btn');
+    const errorBox = document.getElementById('error');
+
+    function showResult(shortUrl) {
+      errorBox.style.display = 'none';
+      resultLink.href = shortUrl;
+      resultLink.textContent = shortUrl;
+      resultBox.style.display = 'flex';
+      copyBtn.textContent = 'Copy';
+      copyBtn.classList.remove('copied');
+    }
+
+    function showError(message) {
+      resultBox.style.display = 'none';
+      errorBox.textContent = message;
+      errorBox.style.display = 'flex';
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      submitBtn.textContent = isLoading ? 'Shortening…' : 'Shorten';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const url = input.value.trim();
+      if (!url) return;
+
+      setLoading(true);
+      errorBox.style.display = 'none';
+      resultBox.style.display = 'none';
+
+      const formData = new FormData();
+      // ASSUMPTION: adjust the field name below to match what your Worker expects.
+      formData.append('url', url);
+
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          let detail = '';
+          try {
+            detail = await response.text();
+          } catch (_) {}
+          throw new Error(
+            `Server returned ${response.status}${detail ? ': ' + detail : ''}`
+          );
+        }
+
+        const data = await response.json();
+
+        // ASSUMPTION: adjust this to match your Worker's actual response shape.
+        const code = data.code || data.shortCode || data.id;
+        if (!code) {
+          throw new Error('Response did not include a short code.');
+        }
+
+        const shortUrl = `https://hxll.de/l?${code}`;
+        showResult(shortUrl);
+
+      } catch (err) {
+        // Fallback: network failure, CORS issue, bad JSON, non-2xx, etc.
+        // all land here with a readable message instead of a silent failure.
+        const message = err instanceof TypeError
+          ? 'Could not reach the shortener. Check your connection or try again.'
+          : err.message || 'Something went wrong shortening that link.';
+        showError(message);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(resultLink.href);
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      } catch (_) {
+        // Clipboard API unavailable (e.g. non-HTTPS context) — select text as fallback.
+        const range = document.createRange();
+        range.selectNode(resultLink);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+      }
+    });
+  </script>
+
+</body>
+</html>
