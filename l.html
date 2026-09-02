@@ -335,7 +335,7 @@
         const resp = await fetch(`${WORKER_URL}?code=${encodeURIComponent(code)}`);
 
         if (resp.status === 404) {
-          statusEl.textContent = "this link doesn't exist (or was mistyped).";
+          window.location.replace('https://hxll.de/');
           return;
         }
         if (!resp.ok) {
@@ -351,7 +351,9 @@
         window.location.replace(data.url);
 
       } catch (err) {
-        statusEl.textContent = 'could not resolve this link. try again in a moment.';
+        // Missing/broken link, network hiccup, whatever — never leave the
+        // visitor stuck on a dead redirect page.
+        window.location.replace('https://hxll.de/');
       }
     })();
 
