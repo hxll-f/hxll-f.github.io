@@ -372,7 +372,6 @@
 
   <script>
     const WORKER_URL = 'https://link-shortener.inqueries-hxll.workers.dev/';
-    const REDIRECT_DELAY_SECONDS = 4;
 
     const form = document.getElementById('shorten-form');
     const input = document.getElementById('url-input');
@@ -536,29 +535,10 @@
       statusEl.style.display = 'none';
       card.classList.add('visible');
 
-      let secondsLeft = REDIRECT_DELAY_SECONDS;
-      countdownText.textContent = `redirecting in ${secondsLeft}s…`;
-
-      const timer = setInterval(() => {
-        secondsLeft -= 1;
-        if (secondsLeft <= 0) {
-          clearInterval(timer);
-          go();
-          return;
-        }
-        countdownText.textContent = `redirecting in ${secondsLeft}s…`;
-      }, 1000);
-
       function go() {
         clearInterval(timer);
         document.title = 'Redirecting…';
         window.location.href = url;
-      }
-
-      function stay() {
-        clearInterval(timer);
-        countdownText.textContent = 'redirect cancelled.';
-        btnContinue.textContent = 'go now →';
       }
 
       btnContinue.addEventListener('click', go);
