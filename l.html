@@ -203,6 +203,119 @@
 
   html.has-code #shorten-view { display: none; }
   html.has-code #redirect-view { display: block; }
+
+  /* --- destination preview card --- */
+
+  .preview-card {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 4px;
+  }
+
+  .preview-card.visible {
+    display: flex;
+  }
+
+  .preview-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .preview-favicon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background: var(--bg);
+  }
+
+  .preview-host {
+    color: var(--muted);
+    font-size: 12px;
+    word-break: break-all;
+  }
+
+  .preview-image {
+    display: none;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .preview-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .preview-desc {
+    display: none;
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  .preview-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .countdown-text {
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-continue, .btn-cancel {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-continue {
+    background: var(--accent);
+    color: #1a1305;
+    border: none;
+    font-weight: 600;
+    transition: background 0.15s ease;
+  }
+
+  .btn-continue:hover {
+    background: #f0c25b;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-cancel:hover {
+    background: var(--border);
+    color: var(--text);
+  }
 </style>
 </head>
 <body>
@@ -237,11 +350,29 @@
 
     <div id="redirect-view">
       <p id="redirect-status">redirecting…</p>
+
+      <div class="preview-card" id="preview-card">
+        <div class="preview-head">
+          <img class="preview-favicon" id="preview-favicon" alt="">
+          <span class="preview-host" id="preview-host"></span>
+        </div>
+        <img class="preview-image" id="preview-image" alt="">
+        <p class="preview-title" id="preview-title"></p>
+        <p class="preview-desc" id="preview-desc"></p>
+        <div class="preview-actions">
+          <span class="countdown-text" id="countdown-text"></span>
+          <div class="btn-row">
+            <button class="btn-cancel" id="btn-cancel" type="button">stay</button>
+            <button class="btn-continue" id="btn-continue" type="button">continue →</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     const WORKER_URL = 'https://link-shortener.inqueries-hxll.workers.dev/';
+    const REDIRECT_DELAY_SECONDS = 4;
 
     const form = document.getElementById('shorten-form');
     const input = document.getElementById('url-input');
@@ -320,8 +451,11 @@
       }
     });
 
-    // If this page was opened as hxll.de/l?[code], resolve and redirect instead
-    // of showing the shortener form.
+    // If this page was opened as hxll.de/l?[code], resolve it. If the worker
+    // returns preview metadata for the destination, show a card and count
+    // down instead of redirecting instantly. If it doesn't (older worker,
+    // or metadata fetch failed server-side), fall straight back to the old
+    // instant-redirect behavior — this keeps working either way.
     (async function resolveIfCode() {
       const code = window.location.search.slice(1); // everything after '?'
       if (!code) return;
@@ -344,8 +478,13 @@
           throw new Error('No destination URL in response.');
         }
 
-        document.title = 'Redirecting…';
-        window.location.replace(data.url);
+        if (!data.meta) {
+          document.title = 'Redirecting…';
+          window.location.replace(data.url);
+          return;
+        }
+
+        showPreviewAndRedirect(data.url, data.meta);
 
       } catch (err) {
         // Fallback: network failure or bad response — tell the user rather
@@ -353,6 +492,78 @@
         statusEl.textContent = 'could not resolve this link. try again in a moment.';
       }
     })();
+
+    function showPreviewAndRedirect(url, meta) {
+      const statusEl = document.getElementById('redirect-status');
+      const card = document.getElementById('preview-card');
+      const favicon = document.getElementById('preview-favicon');
+      const host = document.getElementById('preview-host');
+      const image = document.getElementById('preview-image');
+      const title = document.getElementById('preview-title');
+      const desc = document.getElementById('preview-desc');
+      const countdownText = document.getElementById('countdown-text');
+      const btnContinue = document.getElementById('btn-continue');
+      const btnCancel = document.getElementById('btn-cancel');
+
+      let destHost;
+      try {
+        destHost = new URL(url).hostname;
+      } catch (_) {
+        destHost = url;
+      }
+
+      if (meta.favicon) {
+        favicon.src = meta.favicon;
+        favicon.onerror = () => { favicon.style.visibility = 'hidden'; };
+      } else {
+        favicon.style.visibility = 'hidden';
+      }
+
+      host.textContent = destHost;
+      title.textContent = meta.title || destHost;
+
+      if (meta.description) {
+        desc.textContent = meta.description;
+        desc.style.display = 'block';
+      }
+
+      if (meta.image) {
+        image.src = meta.image;
+        image.style.display = 'block';
+        image.onerror = () => { image.style.display = 'none'; };
+      }
+
+      statusEl.style.display = 'none';
+      card.classList.add('visible');
+
+      let secondsLeft = REDIRECT_DELAY_SECONDS;
+      countdownText.textContent = `redirecting in ${secondsLeft}s…`;
+
+      const timer = setInterval(() => {
+        secondsLeft -= 1;
+        if (secondsLeft <= 0) {
+          clearInterval(timer);
+          go();
+          return;
+        }
+        countdownText.textContent = `redirecting in ${secondsLeft}s…`;
+      }, 1000);
+
+      function go() {
+        clearInterval(timer);
+        document.title = 'Redirecting…';
+        window.location.href = url;
+      }
+
+      function stay() {
+        clearInterval(timer);
+        countdownText.textContent = 'redirect cancelled.';
+        btnContinue.textContent = 'go now →';
+      }
+
+      btnContinue.addEventListener('click', go);
+      btnCancel.addEventListener('click', stay);
+    }
 
     copyBtn.addEventListener('click', async () => {
       try {
