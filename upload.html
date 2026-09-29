@@ -87,7 +87,10 @@
     margin-bottom: 6px;
   }
 
-  input[type="password"] {
+  input[type="password"],
+  input[type="text"],
+  input[type="number"],
+  select {
     width: 100%;
     background: var(--panel);
     border: 1px solid var(--border);
@@ -99,13 +102,45 @@
     outline: none;
   }
 
-  input[type="password"]::placeholder {
+  input::placeholder {
     color: var(--muted);
   }
 
-  input[type="password"]:focus {
+  input:focus,
+  select:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(227, 179, 65, 0.15);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .tab:hover {
+    color: var(--text);
+  }
+
+  .tab[aria-selected="true"] {
+    border-color: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   .dropzone {
@@ -322,6 +357,159 @@
     margin-top: 14px;
     line-height: 1.5;
   }
+
+  .codes {
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  .codes summary {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .codes summary:hover {
+    color: var(--text);
+  }
+
+  .codes-body {
+    margin-top: 14px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .field-row .field {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .secondary-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .secondary-btn:hover:not(:disabled) {
+    background: var(--border);
+  }
+
+  .secondary-btn:disabled {
+    color: var(--muted);
+    cursor: default;
+  }
+
+  .new-code {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: var(--panel);
+    border: 1px solid var(--success);
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  .new-code-value {
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    word-break: break-all;
+  }
+
+  .new-code-meta {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 4px 0 10px;
+  }
+
+  .new-code-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .codes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .codes-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+  }
+
+  .codes-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-meta {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .code-note {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .code-sub {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .code-sub a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .code-sub a:hover {
+    text-decoration: underline;
+  }
+
+  .status {
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    margin-right: 6px;
+  }
+
+  .status-active { color: var(--success); border-color: var(--success); }
+  .status-used { color: var(--accent); border-color: var(--accent-dim); }
+  .status-expired { color: var(--muted); }
+
+  .codes-empty {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .codes .error {
+    margin-top: 12px;
+  }
 </style>
 </head>
 <body>
@@ -330,9 +518,19 @@
     <p class="eyebrow">hxll.de</p>
     <h1>upload a file<span class="caret"></span></h1>
 
-    <div class="field">
+    <div class="tabs" role="tablist" aria-label="Authentication method">
+      <button class="tab" id="tab-password" type="button" role="tab" aria-selected="true" aria-controls="field-password">password</button>
+      <button class="tab" id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="field-code">one-time code</button>
+    </div>
+
+    <div class="field" id="field-password" role="tabpanel" aria-labelledby="tab-password">
       <label class="field-label" for="password">password</label>
       <input type="password" id="password" placeholder="upload password" autocomplete="off">
+    </div>
+
+    <div class="field" id="field-code" role="tabpanel" aria-labelledby="tab-code" hidden>
+      <label class="field-label" for="code">upload code</label>
+      <input type="text" id="code" placeholder="XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
     </div>
 
     <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Select a file to upload">
@@ -363,17 +561,69 @@
 
     <div class="error" id="error"></div>
 
-    <p class="hint">Served from cdn.hxll.de. A password is required for every upload.</p>
+    <p class="hint">Served from cdn.hxll.de. Every upload needs the password or a one-time code.</p>
+
+    <details class="codes" id="codes">
+      <summary>manage one-time codes</summary>
+      <div class="codes-body">
+        <div class="field">
+          <label class="field-label" for="code-note">note (optional)</label>
+          <input type="text" id="code-note" placeholder="for Max" maxlength="200" autocomplete="off">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="code-ttl">valid for</label>
+            <select id="code-ttl">
+              <option value="600">10 minutes</option>
+              <option value="3600">1 hour</option>
+              <option value="86400" selected>1 day</option>
+              <option value="604800">7 days</option>
+              <option value="2592000">30 days</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="code-max">max size in MB (optional)</label>
+            <input type="number" id="code-max" min="1" step="1" placeholder="no limit">
+          </div>
+        </div>
+        <button class="primary-btn" id="create-code-btn" type="button">Generate code</button>
+
+        <div class="new-code" id="new-code">
+          <div class="new-code-value" id="new-code-value"></div>
+          <div class="new-code-meta" id="new-code-meta"></div>
+          <div class="new-code-actions">
+            <button class="copy-btn" id="copy-code-btn" type="button">Copy code</button>
+            <button class="copy-btn" id="copy-code-link-btn" type="button">Copy link</button>
+          </div>
+        </div>
+
+        <div class="codes-header">
+          <span>codes</span>
+          <button class="copy-btn" id="refresh-codes-btn" type="button">Refresh</button>
+        </div>
+        <ul class="codes-list" id="codes-list"></ul>
+
+        <div class="error" id="codes-error"></div>
+      </div>
+    </details>
   </div>
 
   <script>
-    const UPLOAD_URL = 'https://cdn-upload-worker.inqueries-hxll.workers.dev/';
+    const WORKER_URL = 'https://cdn-upload-worker.inqueries-hxll.workers.dev';
+    const UPLOAD_URL = WORKER_URL + '/';
+    const CODES_URL = WORKER_URL + '/codes';
     const CDN_ORIGIN = 'https://cdn.hxll.de';
 
     const dropzone = document.getElementById('dropzone');
     const dropzoneText = document.getElementById('dropzone-text');
     const fileInput = document.getElementById('file-input');
     const passwordInput = document.getElementById('password');
+    const codeInput = document.getElementById('code');
+    const tabPassword = document.getElementById('tab-password');
+    const tabCode = document.getElementById('tab-code');
+    const fieldPassword = document.getElementById('field-password');
+    const fieldCode = document.getElementById('field-code');
+    const codesPanel = document.getElementById('codes');
     const uploadBtn = document.getElementById('upload-btn');
     const fileInfo = document.getElementById('file-info');
     const fileNameEl = document.getElementById('file-name');
@@ -386,6 +636,32 @@
     const errorBox = document.getElementById('error');
 
     let selectedFile = null;
+    let authMode = 'password';
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const isCode = mode === 'code';
+      tabPassword.setAttribute('aria-selected', String(!isCode));
+      tabCode.setAttribute('aria-selected', String(isCode));
+      fieldPassword.hidden = isCode;
+      fieldCode.hidden = !isCode;
+      // Managing codes requires the password, so hide it for code users.
+      codesPanel.hidden = isCode;
+      errorBox.style.display = 'none';
+    }
+
+    tabPassword.addEventListener('click', () => { setAuthMode('password'); passwordInput.focus(); });
+    tabCode.addEventListener('click', () => { setAuthMode('code'); codeInput.focus(); });
+
+    // Share links look like upload.html#code=XXXX-XXXX. The fragment never reaches a server.
+    (function prefillCodeFromHash() {
+      const params = new URLSearchParams(location.hash.slice(1));
+      const code = params.get('code');
+      if (!code) return;
+      codeInput.value = code;
+      setAuthMode('code');
+      history.replaceState(null, '', location.pathname + location.search);
+    })();
 
     dropzone.addEventListener('click', () => fileInput.click());
     dropzone.addEventListener('keydown', (e) => {
@@ -465,13 +741,39 @@
       copyBtn.classList.remove('copied');
     }
 
+    // Error responses (e.g. a 413 from the platform) aren't always JSON.
+    async function readJson(response) {
+      try {
+        return await response.json();
+      } catch {
+        return {};
+      }
+    }
+
+    function errorMessage(result) {
+      return typeof result.error === 'string' && result.error.trim() !== ''
+        ? result.error
+        : 'Unknown error.';
+    }
+
     uploadBtn.addEventListener('click', async () => {
       if (!selectedFile) return;
 
-      const password = passwordInput.value.trim();
-      if (!password) {
-        showError('Enter the upload password first.');
-        return;
+      const headers = {};
+      if (authMode === 'code') {
+        const code = codeInput.value.trim();
+        if (!code) {
+          showError('Enter your upload code first.');
+          return;
+        }
+        headers['X-Upload-Code'] = code;
+      } else {
+        const password = passwordInput.value.trim();
+        if (!password) {
+          showError('Enter the upload password first.');
+          return;
+        }
+        headers['X-Upload-Password'] = password;
       }
 
       const formData = new FormData();
@@ -485,11 +787,11 @@
       try {
         const response = await fetch(UPLOAD_URL, {
           method: 'POST',
-          headers: { 'X-Upload-Password': password },
+          headers,
           body: formData,
         });
 
-        const result = await response.json();
+        const result = await readJson(response);
 
         if (response.ok && result.success) {
           const safeUrl = validateCdnUrl(result.url);
@@ -500,10 +802,17 @@
           }
           showResult(safeUrl);
           resetSelection();
+          // A code is spent after one successful upload.
+          if (authMode === 'code') codeInput.value = '';
         } else {
-          const message = typeof result.error === 'string' && result.error.trim() !== ''
-            ? result.error
-            : 'Unknown error.';
+          let message = errorMessage(result);
+          if (response.status === 413) {
+            message = authMode === 'code'
+              ? 'File is too large for this code. The code is still valid, so try a smaller file.'
+              : 'File is too large.';
+          } else if (response.status === 401 && authMode === 'code') {
+            message = 'This code is invalid, already used, or expired.';
+          }
           showError(`Upload failed: ${message}`);
           uploadBtn.disabled = false;
         }
@@ -533,6 +842,241 @@
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(range);
       }
+    });
+
+    // ---- one-time codes ----
+
+    const codeNoteInput = document.getElementById('code-note');
+    const codeTtlSelect = document.getElementById('code-ttl');
+    const codeMaxInput = document.getElementById('code-max');
+    const createCodeBtn = document.getElementById('create-code-btn');
+    const newCodeBox = document.getElementById('new-code');
+    const newCodeValue = document.getElementById('new-code-value');
+    const newCodeMeta = document.getElementById('new-code-meta');
+    const copyCodeBtn = document.getElementById('copy-code-btn');
+    const copyCodeLinkBtn = document.getElementById('copy-code-link-btn');
+    const refreshCodesBtn = document.getElementById('refresh-codes-btn');
+    const codesList = document.getElementById('codes-list');
+    const codesError = document.getElementById('codes-error');
+
+    let codesLoaded = false;
+
+    function showCodesError(message) {
+      codesError.textContent = message;
+      codesError.style.display = 'block';
+    }
+
+    function clearCodesError() {
+      codesError.style.display = 'none';
+    }
+
+    function requirePassword() {
+      const password = passwordInput.value.trim();
+      if (!password) {
+        showCodesError('Enter the upload password above first.');
+        passwordInput.focus();
+        return null;
+      }
+      return password;
+    }
+
+    // Accepts ISO strings, unix seconds, or unix milliseconds.
+    function formatTime(value) {
+      if (value === null || value === undefined || value === '') return '';
+      let date;
+      if (typeof value === 'number') {
+        date = new Date(value < 1e12 ? value * 1000 : value);
+      } else {
+        date = new Date(value);
+      }
+      if (isNaN(date)) return String(value);
+      return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function shareLinkFor(code) {
+      return `${location.origin}${location.pathname}#code=${encodeURIComponent(code)}`;
+    }
+
+    async function copyText(text, btn, label) {
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = label;
+          btn.classList.remove('copied');
+        }, 1500);
+      } catch {
+        showCodesError(`Could not copy. Copy it manually: ${text}`);
+      }
+    }
+
+    async function codesRequest(path, options = {}) {
+      const password = requirePassword();
+      if (!password) return null;
+      const headers = { 'X-Upload-Password': password, ...(options.headers || {}) };
+      try {
+        const response = await fetch(CODES_URL + path, { ...options, headers });
+        const result = await readJson(response);
+        return { response, result };
+      } catch {
+        showCodesError('Could not reach the upload server. Check your connection or try again.');
+        return null;
+      }
+    }
+
+    createCodeBtn.addEventListener('click', async () => {
+      clearCodesError();
+
+      const body = { ttl_seconds: Number(codeTtlSelect.value) };
+      const note = codeNoteInput.value.trim();
+      if (note) body.note = note;
+      const maxMb = codeMaxInput.value.trim();
+      if (maxMb) {
+        const mb = Number(maxMb);
+        if (!Number.isFinite(mb) || mb <= 0) {
+          showCodesError('Max size must be a positive number of MB.');
+          return;
+        }
+        body.max_bytes = Math.round(mb * 1024 * 1024);
+      }
+
+      createCodeBtn.disabled = true;
+      const res = await codesRequest('', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      createCodeBtn.disabled = false;
+      if (!res) return;
+
+      const { response, result } = res;
+      if (response.status !== 201 || typeof result.code !== 'string') {
+        showCodesError(`Could not create code: ${errorMessage(result)}`);
+        return;
+      }
+
+      newCodeValue.textContent = result.code;
+      const meta = [`expires ${formatTime(result.expires_at)}`];
+      if (result.note) meta.unshift(result.note);
+      if (result.max_bytes) meta.push(`max ${formatFileSize(result.max_bytes)}`);
+      newCodeMeta.textContent = meta.join(' · ');
+      newCodeBox.style.display = 'block';
+      codeNoteInput.value = '';
+      loadCodes();
+    });
+
+    copyCodeBtn.addEventListener('click', () => {
+      copyText(newCodeValue.textContent, copyCodeBtn, 'Copy code');
+    });
+
+    copyCodeLinkBtn.addEventListener('click', () => {
+      copyText(shareLinkFor(newCodeValue.textContent), copyCodeLinkBtn, 'Copy link');
+    });
+
+    function renderCodes(codes) {
+      codesList.replaceChildren();
+      if (codes.length === 0) {
+        const empty = document.createElement('li');
+        empty.className = 'codes-empty';
+        empty.textContent = 'No codes yet.';
+        codesList.append(empty);
+        return;
+      }
+
+      for (const c of codes) {
+        const li = document.createElement('li');
+
+        const meta = document.createElement('div');
+        meta.className = 'code-meta';
+
+        const noteEl = document.createElement('span');
+        noteEl.className = 'code-note';
+        const status = ['active', 'used', 'expired'].includes(c.status) ? c.status : 'expired';
+        const badge = document.createElement('span');
+        badge.className = `status status-${status}`;
+        badge.textContent = status;
+        noteEl.append(badge, c.note || '(no note)');
+
+        const sub = document.createElement('span');
+        sub.className = 'code-sub';
+        if (status === 'used') {
+          sub.append(`used ${formatTime(c.used_at)}`);
+          const fileUrl = validateCdnUrl(c.url);
+          if (fileUrl) {
+            sub.append(' · ');
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.textContent = 'view file';
+            sub.append(link);
+          }
+        } else if (status === 'active') {
+          sub.textContent = `expires ${formatTime(c.expires_at)}`;
+        } else {
+          sub.textContent = `expired ${formatTime(c.expires_at)}`;
+        }
+
+        meta.append(noteEl, sub);
+        li.append(meta);
+
+        if (status === 'active') {
+          const revokeBtn = document.createElement('button');
+          revokeBtn.type = 'button';
+          revokeBtn.className = 'copy-btn';
+          revokeBtn.textContent = 'Revoke';
+          revokeBtn.addEventListener('click', () => revokeCode(c.id, c.note, revokeBtn));
+          li.append(revokeBtn);
+        }
+
+        codesList.append(li);
+      }
+    }
+
+    async function loadCodes() {
+      clearCodesError();
+      refreshCodesBtn.disabled = true;
+      const res = await codesRequest('', { method: 'GET' });
+      refreshCodesBtn.disabled = false;
+      if (!res) return;
+
+      const { response, result } = res;
+      if (!response.ok || !Array.isArray(result.codes)) {
+        showCodesError(`Could not load codes: ${errorMessage(result)}`);
+        return;
+      }
+      codesLoaded = true;
+      renderCodes(result.codes);
+    }
+
+    async function revokeCode(id, note, btn) {
+      const label = note ? `"${note}"` : 'this code';
+      if (!confirm(`Revoke ${label}? It can no longer be used to upload.`)) return;
+
+      clearCodesError();
+      btn.disabled = true;
+      const res = await codesRequest('/' + encodeURIComponent(id), { method: 'DELETE' });
+      if (!res) {
+        btn.disabled = false;
+        return;
+      }
+
+      const { response, result } = res;
+      if (response.status === 404) {
+        showCodesError('That code was already used or no longer exists.');
+      } else if (!response.ok) {
+        showCodesError(`Could not revoke code: ${errorMessage(result)}`);
+        btn.disabled = false;
+        return;
+      }
+      loadCodes();
+    }
+
+    refreshCodesBtn.addEventListener('click', loadCodes);
+
+    codesPanel.addEventListener('toggle', () => {
+      if (codesPanel.open && !codesLoaded && passwordInput.value.trim()) loadCodes();
     });
   </script>
 
