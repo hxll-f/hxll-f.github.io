@@ -1,0 +1,64 @@
+/* Hero Image Positioning Fix */
+
+/* Ensure enough height; avoid forcing flex on mobile */
+.hero_section {
+        min-height: 500px;
+}
+
+/* Desktop/tablet layout: align text and image side-by-side nicely */
+@media (min-width: 768px) {
+    .hero_section {
+        display: flex;
+        align-items: center;
+    }
+    .hero_section .row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    .hero_section .col-lg-7,
+    .hero_section .col-sm-5 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    .hero-image-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        padding: 0; /* Removed padding that could affect alignment */
+    }
+}
+
+/* Make the image more proportional and ensure vertical alignment with text */
+.hero_section img {
+    max-width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: contain; /* preserve aspect ratio */
+    margin: auto; /* Center the image */
+    display: block;
+    transform: translateY(0);
+    position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero_section {
+        min-height: auto;
+        padding: 40px 0;
+    }
+    /* Ensure Bootstrap's stacking works on mobile */
+    .hero_section .row { display: block; }
+    .hero_section .col-lg-7,
+    .hero_section .col-sm-5 { display: block; height: auto; }
+    .hero-image-container { display: block; width: 100%; }
+    .hero_section img {
+        max-height: 280px;
+        width: 100%;
+        margin-top: 16px;
+    }
+}

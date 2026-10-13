@@ -1,0 +1,134 @@
+/* Section transitions and advanced styling */
+
+/* Section dividers with subtle purple accent */
+section:not(#header_wrapper):not(.footer_wrapper) {
+    position: relative;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+}
+
+/* Enhanced hover effects for portfolio items */
+.portfolio-item {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 10px 20px rgba(127, 109, 242, 0.3);
+    z-index: 2;
+}
+
+/* Static gradient background for specific sections */
+#hero_section, #contact {
+    position: relative;
+    overflow: hidden;
+}
+
+#hero_section::after, #contact::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(ellipse at center, rgba(127, 109, 242, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Enhance section headings with subtle purple underline */
+h2 {
+    position: relative;
+    text-align: center;
+    width: 100%;
+    margin: 0px 0 25px 0;
+}
+
+h2::after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 3px;
+    background: var(--text-accent);
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(127, 109, 242, 0.5);
+}
+
+/* Add subtle texture overlay to all sections */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AkEBDQWNQ8eGgAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAABBUlEQVR42uzSMQrCQBBA0Zfdn9mysbCzsbGxsfQM3kEQvIOF5/BKFhYWFhYWFhYpEiRkQUQUk/dvMbDBMsPMAvpTSinhs8NOYWEzFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTmHhFBZOYeEUFk5h4RQWTvEHnw0AQr0J0lOtw8AAAAAASUVORK5CYII=");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Add glow effect to service icons */
+.service_icon:hover i {
+    text-shadow: 0 0 15px rgba(127, 109, 242, 0.8);
+}
+
+/* Improve form elements */
+.input-text {
+    transition: all 0.3s ease;
+    border-bottom: 2px solid var(--background-modifier-border) !important;
+}
+
+.input-text:focus {
+    border-bottom: 2px solid var(--text-accent) !important;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+/* Enhance social links */
+.social_links li a {
+    background: var(--background-primary-alt);
+    border: 1px solid var(--background-modifier-border);
+    box-shadow: inset 0 0 0 1px rgba(127, 109, 242, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social_links li a:hover {
+    background: var(--interactive-accent);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(127, 109, 242, 0.3);
+}
+
+/* Glass morphism effect on certain elements */
+.navStyle ul, .form, .item_overlay {
+    backdrop-filter: blur(5px);
+}
+
+/* Section-specific subtle color accents in content */
+#service h3 {
+    color: var(--text-accent);
+    opacity: 0.9;
+}
+
+#aboutUs h3 {
+    color: #a9a1e5; /* Slightly different purple */
+}
+
+.team h3 {
+    color: #9d90f5; /* Another purple variation */
+}
+
+/* Force center alignment for all section titles */
+section h2, 
+#aboutUs h2, 
+#service h2, 
+#Portfolio .section-title h2, 
+#clients h2, 
+.team h2, 
+.contact h2 {
+    text-align: center !important;
+    display: block;
+    width: 100%;
+    margin-bottom: 25px;
+}
