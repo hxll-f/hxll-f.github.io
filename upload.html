@@ -552,6 +552,7 @@
     </div>
 
     <button class="primary-btn" id="upload-btn" disabled>Upload</button>
+    <div id="turnstile-widget" style="margin-top: 12px;"></div>
 
     <div class="progress" id="progress">
       <div class="progress-track" role="progressbar" id="progress-track" aria-label="Upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -625,6 +626,54 @@
     const UPLOAD_URL = WORKER_URL + '/';
     const CODES_URL = WORKER_URL + '/codes';
     const CDN_ORIGIN = 'https://cdn.hxll.de';
+
+    // --- Turnstile (bot check) ---
+    // Tokens are single-use: every protected request takes the current one, and the widget is reset
+    // so the next request has a fresh token waiting. The Worker verifies each token server-side.
+    const TURNSTILE_SITEKEY = '0x4AAAAAAF_sOcmPEw56jI-E';
+    const botCheck = {
+      widgetId: null,
+      token: null,
+      waiters: [],
+      init(action) {
+        const mount = () => {
+          this.widgetId = turnstile.render('#turnstile-widget', {
+            sitekey: TURNSTILE_SITEKEY,
+            action,
+            theme: 'auto',
+            callback: (t) => {
+              const waiter = this.waiters.shift();
+              if (waiter) { waiter(t); this.refresh(); } else { this.token = t; }
+            },
+            'expired-callback': () => { this.token = null; this.refresh(); },
+            'error-callback': () => { this.token = null; },
+          });
+        };
+        if (window.turnstile) mount(); else window.onTurnstileLoad = mount;
+      },
+      refresh() {
+        if (this.widgetId !== null && window.turnstile) turnstile.reset(this.widgetId);
+      },
+      // Resolves with a token that has not been used yet (waits for the widget if needed).
+      take(timeoutMs = 30000) {
+        if (this.token) {
+          const t = this.token;
+          this.token = null;
+          this.refresh();
+          return Promise.resolve(t);
+        }
+        return new Promise((resolve, reject) => {
+          const done = (t) => { clearTimeout(timer); resolve(t); };
+          const timer = setTimeout(() => {
+            this.waiters = this.waiters.filter((w) => w !== done);
+            reject(new Error('The bot check did not finish. Complete it above, or reload the page.'));
+          }, timeoutMs);
+          this.waiters.push(done);
+        });
+      },
+    };
+    // Uploads and the code manager both go through the Worker, which checks a token on every request.
+    botCheck.init('upload');
 
     const dropzone = document.getElementById('dropzone');
     const dropzoneText = document.getElementById('dropzone-text');
@@ -860,6 +909,7 @@
       errorBox.style.display = 'none';
 
       try {
+        headers['X-Turnstile-Token'] = await botCheck.take();
         const { response, result } = await uploadWithProgress(formData, headers, selectedFile.size);
 
         if (response.ok && result.success) {
@@ -983,7 +1033,14 @@
     async function codesRequest(path, options = {}) {
       const password = requirePassword();
       if (!password) return null;
-      const headers = { 'X-Upload-Password': password, ...(options.headers || {}) };
+      let token;
+      try {
+        token = await botCheck.take();
+      } catch (err) {
+        showCodesError(err.message);
+        return null;
+      }
+      const headers = { 'X-Upload-Password': password, 'X-Turnstile-Token': token, ...(options.headers || {}) };
       try {
         const response = await fetch(CODES_URL + path, { ...options, headers });
         const result = await readJson(response);
@@ -1149,5 +1206,6 @@
     });
   </script>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
 </body>
 </html>

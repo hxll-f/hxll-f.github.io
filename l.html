@@ -224,6 +224,7 @@
         >
         <button type="submit" id="submit-btn">Shorten</button>
       </form>
+      <div id="turnstile-widget" style="margin-top: 12px;"></div>
 
       <div class="result" id="result">
         <a id="result-link" href="#" target="_blank" rel="noopener"></a>
@@ -242,6 +243,54 @@
 
   <script>
     const WORKER_URL = 'https://link-shortener.inqueries-hxll.workers.dev/';
+
+    // --- Turnstile (bot check) ---
+    // Tokens are single-use: every protected request takes the current one, and the widget is reset
+    // so the next request has a fresh token waiting. The Worker verifies each token server-side.
+    const TURNSTILE_SITEKEY = '0x4AAAAAAF_sOcmPEw56jI-E';
+    const botCheck = {
+      widgetId: null,
+      token: null,
+      waiters: [],
+      init(action) {
+        const mount = () => {
+          this.widgetId = turnstile.render('#turnstile-widget', {
+            sitekey: TURNSTILE_SITEKEY,
+            action,
+            theme: 'auto',
+            callback: (t) => {
+              const waiter = this.waiters.shift();
+              if (waiter) { waiter(t); this.refresh(); } else { this.token = t; }
+            },
+            'expired-callback': () => { this.token = null; this.refresh(); },
+            'error-callback': () => { this.token = null; },
+          });
+        };
+        if (window.turnstile) mount(); else window.onTurnstileLoad = mount;
+      },
+      refresh() {
+        if (this.widgetId !== null && window.turnstile) turnstile.reset(this.widgetId);
+      },
+      // Resolves with a token that has not been used yet (waits for the widget if needed).
+      take(timeoutMs = 30000) {
+        if (this.token) {
+          const t = this.token;
+          this.token = null;
+          this.refresh();
+          return Promise.resolve(t);
+        }
+        return new Promise((resolve, reject) => {
+          const done = (t) => { clearTimeout(timer); resolve(t); };
+          const timer = setTimeout(() => {
+            this.waiters = this.waiters.filter((w) => w !== done);
+            reject(new Error('The bot check did not finish. Complete it above, or reload the page.'));
+          }, timeoutMs);
+          this.waiters.push(done);
+        });
+      },
+    };
+    // Only the shorten form needs it; redirect visits (?code) never show the widget.
+    if (window.location.search.length <= 1) botCheck.init('shorten');
 
     const form = document.getElementById('shorten-form');
     const input = document.getElementById('url-input');
@@ -286,6 +335,7 @@
       formData.append('url', url);
 
       try {
+        formData.append('cf-turnstile-response', await botCheck.take());
         const response = await fetch(WORKER_URL, {
           method: 'POST',
           body: formData
@@ -375,5 +425,6 @@
     });
   </script>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
 </body>
 </html>
